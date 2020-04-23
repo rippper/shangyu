@@ -32,12 +32,12 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'getCourseInfoListAll',
-      selecttype: 1,
-      channelId: '',
-      UserID: '',
-      Keyword: '',
-      Page: 1,
-      PageCount: 6
+      // selecttype: 1,
+      // channelId: '',
+      // UserID: '',
+      // Keyword: '',
+      // Page: 1,
+      // PageCount: 6
     }
   },
   /**
@@ -47,8 +47,8 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'getNoticeInfoList',
-      Page: 1,
-      PageCount: 6
+      // Page: 1,
+      // PageCount: 6
     }
   },
   /**
@@ -120,8 +120,8 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'CheckLoginStatus',
-      UserID: '',
-      Mac: ''
+      // UserId: '',
+      // Mac: ''
     }
   },
   /**
@@ -293,12 +293,12 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'getCourseInfoList',
-      selecttype: 1,
-      channelName: 'recommend',
-      UserID: '',
-      Keyword: '',
-      Page: 1,
-      PageCount: 6
+      // selecttype: 1,
+      // channelName: 'recommend',
+      // UserID: '',
+      // Keyword: '',
+      // Page: 1,
+      // PageCount: 6
     }
   },
   /**
@@ -478,8 +478,8 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'GetExamWrongTheme',
-      examPageId: '',
-      portal: 1
+      // examPageId: '',
+      // portal: 1
     }
   },
   // 在线测试排名接口
@@ -500,7 +500,20 @@ export const Api2 = {
       UserID: '',
       portal: 1
     }
+  },
+  getZTChannelInfoList: {
+    url: API_URL,
+    data: {
+      method: 'getZTChannelInfoList'
+    }
+  },
+  getArticleTopList: {
+    url: API_URL,
+    data: {
+      method: 'getArticleTopList'
+    }
   }
+
 };
 /*3.0接口*/
 export const Api3 = {

@@ -1,8 +1,6 @@
 <template>
   <div class="examGuide container_both">
-    <header-fix title="考试中心" fixed>
-      <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
-    </header-fix>
+    <header-fix title="我的考试" fixed></header-fix>
 
     <div class="guideList">
       <router-link to="/examCenter">
@@ -13,20 +11,24 @@
       <!-- <div class="referenceExam">
         <img src="../assets/refenceExam.png">
       </div> -->
-      <router-link to="/userRaceRank">
+      <!-- <router-link to="/userRaceRank">
         <div class="rankExam">
           <img src="../assets/examRank.png">
         </div>
-      </router-link>
+      </router-link> -->
     </div>
-    <footer-fix selected="examGuide"></footer-fix>
+    <bottomBar selected="3"></bottomBar>
   </div>
 </template>
 <script>
 import { goBack } from "../service/mixins";
+import { bottomBar } from '../components'
 
 export default {
-  mixins: [goBack]
+  mixins: [goBack],
+  components: {
+    bottomBar
+  }
 };
 </script>
 <style lang="scss" rel="stylesheet/scss">

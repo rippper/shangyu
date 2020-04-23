@@ -28,6 +28,8 @@
   @import "../style/mixin";
 
   .header {
+    max-width: 10rem;
+    margin:0 auto;
     @include flex();
     align-items: center;
     @include ht-lineHt(92px);

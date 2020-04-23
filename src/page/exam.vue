@@ -62,7 +62,7 @@
       <div class="rule_modal">
         <h4>测试须知</h4>
         <p>您好！</p>
-        <p>欢迎您参加太仓市领导干部政治理论应知应会知识测试！</p>
+        <p>欢迎您参加上虞市领导干部政治理论应知应会知识测试！</p>
         <p class="title">一、测试试题</p>
         <p>1.测试试题由单选题、多选题、判断题三种题型组成。</p>
         <p>2.每套试卷由系统随机选题后自动生成，共设置10题，每题10分，满分100分，合格分60分。</p>
@@ -235,6 +235,7 @@ export default {
     async upDateExam() {
       let t = this;
       let params = t.changeSendData(t.choosedItem);
+      console.log(params)
       let strData = params.reduce((str, item, index) => {
         if (Array.isArray(item.Answer)) {
           item.Answer = item.Answer.sort().join("");
@@ -245,7 +246,7 @@ export default {
       let data = await UpdateUserExamAPI2({
         Date: new Date(),
         examId: t.examId,
-        UserID: this.userInfo.UserID,
+        UserID: this.userInfo.UserId,
         Data: strData
       });
 
@@ -381,11 +382,16 @@ export default {
   }
 
   .exam_footer {
+    height: toRem(110px);
     position: fixed;
     width: 100%;
-    bottom: toRem(20px);
+    bottom:0;
     text-align: center;
     left: 0;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    z-index: 20;
     /*line-height: 73px;*/
     .mint-button {
       @include wh(150px, 73px);

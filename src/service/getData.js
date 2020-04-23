@@ -504,6 +504,8 @@ export const AddUserAiss = (data) => fetch.post(Api.AddUserAiss.url, { ...Api.Ad
   ...data
 });
 
+export const getArticleTopList = (data) => fetch.post(Api.getArticleTopList.url, { ...Api.getArticleTopList.data, ...data });
+
 /*2.5接口*/
 Api = Api2;
 /**
@@ -539,7 +541,7 @@ export const getNoticeInfoContent = (data) => fetch.post(Api.getNoticeInfoConten
 /**
  *  课程搜索
  */
-export const getCourseInfoListBySearch = (data) => fetch.post(Api.getCourseInfoListBySearch.url, { ...Api.getCourseInfoListBySearch.data,
+export const getCourseInfoListBySearch = (data) => fetch.get(Api.getCourseInfoListBySearch.url, { ...Api.getCourseInfoListBySearch.data,
   ...data
 });
 /**
@@ -563,7 +565,7 @@ export const CheckLoginStatus = (data) => fetch.post(Api.CheckLoginStatus.url, {
 /**
  *
  */
-export const UpdateUserCourse = (data) => fetch.post(Api.UpdateUserCourse.url, { ...Api.UpdateUserCourse.data,
+export const UpdateUserCourse = (data) => fetch.get(Api.UpdateUserCourse.url, { ...Api.UpdateUserCourse.data,
   ...data
 });
 /**
@@ -660,7 +662,7 @@ export const GetUserHistory = (data) => fetch.post(Api.GetUserHistory.url, { ...
 /**
  *  考试列表
  */
-export const GetExamListAPI2 = (data) => fetch.post(Api.GetExamList.url, { ...Api.GetExamList.data,
+export const GetExamListAPI2 = (data) => fetch.get(Api.GetExamList.url, { ...Api.GetExamList.data,
   ...data
 });
 /**
@@ -737,3 +739,5 @@ export const GetUserRaceRank = (data) => fetch.post(Api.GetUserRaceRank.url, { .
 export const GetIsDenyUser = (data) => fetch.post(Api.GetIsDenyUser.url, { ...Api.GetIsDenyUser.data,
   ...data
 });
+// 获取首页专题详情信息
+export const getZTChannelInfoList = (data) => fetch.post(Api.getZTChannelInfoList.url, { ...Api.getZTChannelInfoList.data, ...data })

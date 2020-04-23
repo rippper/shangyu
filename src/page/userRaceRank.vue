@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     async getRankData() {
-      let data = await GetUserRaceRank({ UserID: this.userInfo.UserID });
+      let data = await GetUserRaceRank({ UserID: this.userInfo.UserId });
       console.log(data);
       this.rankData = data;
     }

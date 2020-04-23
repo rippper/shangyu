@@ -37,7 +37,7 @@
     methods: {
       // 判断能否看课程
       async GetIsAllowLearn() {
-        let data = await GetIsAllowLearn({UserID: this.userInfo.UserID});
+        let data = await GetIsAllowLearn({UserID: this.userInfo.UserId});
         if (data.result === 'false') {
           MessageBox.alert(`${data.resultMessage}`).then(action => {
             // this.goBack()

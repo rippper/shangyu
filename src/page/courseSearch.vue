@@ -32,14 +32,13 @@
         </course-list>
       </section>
     </search>
-    <footer-fix></footer-fix>
   </div>
 </template>
 <script>
   import Vue from 'vue'
   import { mapState } from 'vuex'
   import { Indicator, InfiniteScroll } from 'mint-ui'
-  import { getCourseInfoListBySearch } from '../service/getData'
+  import { getCourseInfoList } from '../service/getData'
   import { goBack } from '../service/mixins'
   import { getStore, setStore, removeStore, unique } from '../plugins/utils'
 
@@ -76,7 +75,7 @@
         this.year = this.$route.query.year || ''
         this.keyword = this.$route.query.Keyword || ''
         if (this.channelId || this.year || this.keyword) {
-          this.getCourseList({channelID: this.channelId, year: this.year, Keyword: this.keyword})
+          this.clickSearch()
         }
       }
     },
@@ -90,8 +89,13 @@
         this.loading = true
         this.oldKeyword = this.keyword //记录搜索keyword
         Indicator.open()
-        let params = {UserID: this.userInfo.UserID,Page: this.page, Keyword: this.keyword,...options}
-        let data = await getCourseInfoListBySearch(params)
+        let params = {
+          UserID: this.userInfo.UserId,
+          Page: this.page, 
+          Keyword: this.keyword,
+          PageCount: 6,
+          ...options}
+        let data = await getCourseInfoList(params)
         Indicator.close()
         let list = []
         if (Array.isArray(data.CourseInfoList)) {

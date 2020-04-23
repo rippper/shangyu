@@ -3,13 +3,12 @@
 */
 <template>
   <div class="my_course container_both">
-    <header-fix fixed>
-      <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
-      <mb-tab slot="title" v-model="tabType">
+    <header-fix title="我的课程" fixed>
+      <!-- <mb-tab slot="title" v-model="tabType">
         <mb-tab-item id="0">未完成</mb-tab-item>
         <mb-tab-item id="1">已完成</mb-tab-item>
-      </mb-tab>
-      <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link>
+      </mb-tab> -->
+      <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link> 
     </header-fix>
     <div class="my_course_container">
       <mt-tab-container v-model="tabType">
@@ -40,7 +39,7 @@
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
-    <footer-fix></footer-fix>
+    <bottom-bar selected="2"></bottom-bar>
   </div>
 </template>
 <script>
@@ -49,6 +48,7 @@
   import { Indicator, TabContainer, TabContainerItem, InfiniteScroll } from 'mint-ui'
   import { goBack } from '../service/mixins'
   import { getUserCourseInfo } from '../service/getData'
+  import { bottomBar } from '../components'
 
   Vue.component(TabContainer.name, TabContainer)
   Vue.component(TabContainerItem.name, TabContainerItem)
@@ -76,7 +76,7 @@
       ...mapState(['userInfo'])
     },
     mounted () {
-      this.getMyFinishCourse()
+      // this.getMyFinishCourse()
       this.getMyUnFinishCourse()
       var element = this.$el
       element.addEventListener('touchstart', (event) => {
@@ -104,7 +104,8 @@
         this.noFDataBg = false
         this.loading = true
         Indicator.open()
-        let data = await getUserCourseInfo({UserID: this.userInfo.UserID, Finish: 1, Page: this.finishPage})
+        let data = await getUserCourseInfo({UserID: this.userInfo.UserId, Finish: 1, Page: this.finishPage})
+        console.log(data)
         Indicator.close()
         let list = []
         if (Array.isArray(data.UserCourseInfoList)) {
@@ -119,6 +120,7 @@
           return
         }
         this.courseFinishData = this.courseFinishData.concat(list)
+        console.log(this.courseFinishData)
         this.loading = false
         this.finishPage += 1
       },
@@ -128,7 +130,7 @@
         this.noUfDataBg = false
         this.loading = true
         Indicator.open()
-        let data = await getUserCourseInfo({UserID: this.userInfo.UserID,Finish: 0, Page: this.unFinishPage})
+        let data = await getUserCourseInfo({UserID: this.userInfo.UserId,Finish: 0, Page: this.unFinishPage})
         Indicator.close()
         let list = []
         if (Array.isArray(data.UserCourseInfoList)) {
@@ -151,20 +153,20 @@
         let targetTouches=event.targetTouches;
         let changeTouches=event.changeTouches;*/
         let pageX = event.targetTouches[0].pageX
-//        let pageY = event.targetTouches[0].pageY
+        //let pageY = event.targetTouches[0].pageY
         this.startX = pageX
-//        console.log("TouchStart" + pageX, pageY);
+        //console.log("TouchStart" + pageX, pageY);
       },
       doOnTouchMove (event) {
-//        let pageX = event.targetTouches[0].pageX
-//        let pageY = event.targetTouches[0].pageY
-//        console.log("TouchMove" + pageX, pageY);
+        // let pageX = event.targetTouches[0].pageX
+        // let pageY = event.targetTouches[0].pageY
+        // console.log("TouchMove" + pageX, pageY);
       },
       doOnTouchEnd (event) {
         let pageX = event.changedTouches[0].pageX
-//        let pageY = event.changedTouches[0].pageY
+        // let pageY = event.changedTouches[0].pageY
         this.endX = pageX
-//        console.log("TouchEnd" + pageX, pageY);
+        // console.log("TouchEnd" + pageX, pageY);
         //左滑
         if (this.endX < this.startX - 20) {
           this.tabType = '1'
@@ -175,6 +177,9 @@
         }
       },
     },
+    components: {
+      bottomBar
+    }
   }
 </script>
 

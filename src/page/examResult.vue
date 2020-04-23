@@ -46,14 +46,14 @@
         <mt-button type="primary" @click.native="back">结束测试</mt-button>
       </div>
       <div class="reward has_review_btn" v-if="parseInt(result.highscore) < 60">
-        <span class="thanks">您本月的测试未合格，请点击“重新答题”再次进入测试界面，也可下次从“个人空间”内“在线测试”一栏进入答题。</span>
+        <span class="thanks">当前测试已完成！请点击“重新答题”再次进入测试界面，也可下次从“个人空间”内“在线测试”一栏进入答题。</span>
         <mt-button class="primary" type="primary" @click.native="back">结束测试</mt-button>
         <mt-button class="primary" type="primary" @click.native="goReview">查看错题</mt-button>
         <mt-button class="primary" type="primary" @click.native="goExam">重新答题</mt-button>
       </div>
       <div class="reward has_review_btn"
            v-if="parseInt(result.highscore) >= 60 && parseInt(result.highscore) < 100">
-        <span class="thanks">您本月的测试已完成！如需重测，可点击“重新答题”再次进入测试界面。</span>
+        <span class="thanks">当前测试已完成！如需重测，可点击“重新答题”再次进入测试界面。</span>
         <mt-button class="primary" type="primary" @click.native="back">结束测试</mt-button>
         <mt-button class="primary" type="primary" @click.native="goReview">查看错题</mt-button>
         <mt-button class="primary" type="primary" @click.native="goExam">重新答题</mt-button>
@@ -91,10 +91,11 @@
     methods: {
       async getUserRaceInfo() {
         let data = await GetUserRaceInfo({
-          UserID: this.userInfo.UserID,
+          UserID: this.userInfo.UserId,
           examId: this.examId,
           examPaperId: this.examPaperId
         });
+        console.log(data)
         this.result = data.ExamInfoList[0];
       },
       back() {
@@ -141,7 +142,7 @@
       },
       async submitData(mobileNum) {
         let data = await UpdateExamReward({
-          UserID: this.userInfo.UserID,
+          UserID: this.userInfo.UserId,
           examId: this.examId,
           mobileNum,
           examPaperID: this.examPaperId
@@ -151,7 +152,7 @@
       },
       async reviseData(mobileNum) {
         let data = await UpdateRewardPhone({
-          UserID: this.userInfo.UserID,
+          UserID: this.userInfo.UserId,
           examId: this.examId,
           mobileNum,
           examPaperID: this.examPaperId

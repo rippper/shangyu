@@ -5,7 +5,7 @@
   <div class="examSearch container_top">
     <!--头部-->
     <header-fix title="搜索" fixed>
-      <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
+      <i class="webapp webapp-back" @click.stop="toLink" slot="left"></i>
     </header-fix>
     <search v-model="keyword" :search="clickSearch">
       <section v-infinite-scroll="getExamList"
@@ -14,7 +14,10 @@
                infinite-scroll-distance="10">
         <exam-list :exam-data="examData"
                    :no-data-bg="noDataBg"
-                   :no-data="noData">
+                   :no-data="noData"
+                   :backLine="'3'"
+                   :searchInfo="keyword"
+                   >
         </exam-list>
       </section>
     </search>
@@ -31,7 +34,7 @@
     mixins: [goBack],
     data () {
       return {
-        keyword: '',
+        keyword: this.$route.query.keyword || '',
         oldKeyword: '',
         typeId: 0,
         examType: 'All',
@@ -41,10 +44,23 @@
         page: 1,
         noData: false,
         noDataBg: false,
+        linkType: this.$route.query.linkType
+      }
+    },
+    mounted () {
+      if (this.keyword != '') {
+        this.getExamList()
       }
     },
     methods: {
       //考试列表
+      toLink () {
+        if (this.linkType == 1) {
+          this.$router.push({ path: '/onlineExam' })
+        } else if (this.linkType == 2) {
+          this.$router.push({ path: '/examCenter' })
+        }
+      },
       async getExamList () {
         this.noData = false
         this.noDataBg = false
@@ -55,11 +71,12 @@
           Keyword: this.keyword,
           ExamType: this.examType,
           TypeId: this.typeId,
-          Page: this.page
+          Page: this.page,
+          finish: 2
         })
         Indicator.close()
-        if (data.Type == 1) {
-          let list = data.Data
+        if (data.totalCount) {
+          let list = data.ExamInfoList
           if (list.length == 0 && this.page > 1) {
             this.noData = true
             return
@@ -88,9 +105,9 @@
 <style lang="scss" rel="stylesheet/scss">
   @import "../style/mixin";
 
-  .examSearch {
-    height: 100vh;
-    overflow: hidden;
-    background-color: $fill-body;
-  }
+  // .examSearch {
+  //   height: 100vh;
+  //   overflow: hidden;
+  //   background-color: $fill-body;
+  // }
 </style>

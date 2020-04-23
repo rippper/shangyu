@@ -3,7 +3,7 @@
 import App from '../App.vue';
 
 const Home = r => require.ensure([], () => r(require('../page/home.vue')),
-  'home');
+  'home')
 const Login = r => require.ensure([], () => r(require('../page/login.vue')),
   'login');
 const Error = r => require.ensure([], () => r(require('../page/error.vue')),
@@ -30,6 +30,8 @@ const History = r => require.ensure([], () => r(require('../page/history.vue')),
   'history');
 const MyCourse = r => require.ensure([],
   () => r(require('../page/myCourse.vue')), 'myCourse');
+const MyExam = r => require.ensure([],
+  () => r(require('../page/myExam')), 'myExam');
 const NewsCenter = r => require.ensure([],
   () => r(require('../page/newsCenter.vue')), 'newsCenter');
 const NewsSearch = r => require.ensure([],
@@ -84,6 +86,9 @@ const Notification = r => require.ensure([], () => r(require('../page/notificati
   'notification');
 const OpenApp = r => require.ensure([], () => r(require('../page/openApp.vue')),
   'openApp');
+const OnlineExam = r => require.ensure([], () => r(require('../page/onlineExam.vue')),
+  'onlineExam')
+const MyFinishCourse = r => require.ensure([], () => r(require('../page/myFinishCourse.vue')), 'myFinishCourse')
 const MyCollect = r => require.ensure([],
   () => r(require('../page/myCollect.vue')), 'myCollect');
 const LearningPortfolio = r => require.ensure([],
@@ -116,6 +121,10 @@ const UserRaceRank = r => require.ensure([],
   () => r(require('../page/userRaceRank.vue')), 'userRaceRank');
 const ExamGuide = r => require.ensure([],
   () => r(require('../page/examGuide.vue')), 'examGuide');
+const SpecialTask = r => require.ensure([],
+  () => r(require('../page/specialTask.vue')), 'specialTask');
+const CommunityCenter = r => require.ensure([],
+  () => r(require('../page/communityCenter.vue')), 'communityCenter');
 const routes = [{
     path: '/',
     component: App,
@@ -127,6 +136,15 @@ const routes = [{
         },
       },
       //登陆
+      {
+        name: 'home',
+        path: '/home',
+        component: Home,
+        meta: {
+          title: '首页'
+        }
+      },
+      // 首页
       {
         name: 'login',
         path: '/login',
@@ -143,6 +161,22 @@ const routes = [{
         meta: {
           title: '首页'
         },
+      },
+      {
+        name: 'onlineExam',
+        path: '/onlineExam',
+        component: OnlineExam,
+        meta: {
+          title: '在线考试'
+        }
+      },
+      {
+        name: 'myFinishCourse',
+        path: '/myFinishCourse',
+        component: MyFinishCourse,
+        meta: {
+          title: '已完成的课程'
+        }
       },
       //课程中心
       {
@@ -168,7 +202,7 @@ const routes = [{
         path: '/examCenter',
         component: ExamCenter,
         meta: {
-          title: '在线测试'
+          title: '考试列表'
         },
       },
       //考试
@@ -204,7 +238,7 @@ const routes = [{
         path: '/personalCenter',
         component: PersonalCenter,
         meta: {
-          title: '个人空间'
+          title: '个人中心'
         },
       },
       //消息中心
@@ -242,6 +276,15 @@ const routes = [{
         meta: {
           title: '我的课程'
         },
+      },
+      //我的考试
+      {
+        name: 'MyExam',
+        path: '/MyExam',
+        component: MyExam,
+        meta: {
+          title: '已完成的考试'
+        }
       },
       //新闻中心
       {
@@ -626,7 +669,25 @@ const routes = [{
         path: 'examGuide',
         component: ExamGuide,
         meta: {
-          title: '考试中心'
+          title: '我的考试'
+        }
+      },
+      // 专题学习
+      {
+        name: 'specialTask',
+        path: '/specialTask',
+        component: SpecialTask,
+        meta: {
+          title: '专题学习'
+        }
+      },
+      // 资讯中心
+      {
+        name: 'communityCenter',
+        path: '/communityCenter',
+        component: CommunityCenter,
+        meta: {
+          title: '资讯中心'
         }
       },
       //error

@@ -8,7 +8,7 @@
       <div class="my_info">
         <h4>{{userInfo.Username}}</h4>
         <p>
-          学时：{{userInfo.TotalCredit}}
+          学分：{{userInfo.TotalCredit}}
           <span class="shuxian">|</span>
           排行：{{userInfo.ScoreRank}}
           <!--<span class="shuxian">|</span>
@@ -17,16 +17,16 @@
       </div>
     </div>
     <div class="cell_list_one">
-      <mt-cell title="我的课程" is-link to="/myCourse">
+      <mt-cell title="已完成的课程" is-link to="/myFinishCourse">
         <i slot="icon" class="webapp webapp-kecheng" style="color: #ce76a4;"></i>
+      </mt-cell>
+      <mt-cell title="已完成的考试" is-link to="/myExam">
+        <i slot="icon" class="webapp webapp-kecheng" style="color: #e95c2c;"></i>
       </mt-cell>
       <mt-cell title="我的学分" is-link to="/myCredit">
         <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
       </mt-cell>
-      <!--<mt-cell title="我的收藏" is-link to="/myCollect">
-        <i slot="icon" class="webapp webapp-collect" style="color: #e95c2c;"></i>
-      </mt-cell>-->
-      <mt-cell title="学习档案" is-link to="/learningPortfolio">
+      <mt-cell title="学分排行" is-link to="/rankList">
         <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
       </mt-cell>
     </div>
@@ -56,18 +56,25 @@
       </mt-cell>-->
     </div>
     <div class="cell_list_three">
-      <mt-cell title="上传进度" is-link to="/uploadProgress">
+      <!-- <mt-cell title="上传进度" is-link to="/uploadProgress">
         <i slot="icon" class="webapp webapp-set" style="color: #00ce6a;"></i>
-      </mt-cell>
-      <mt-cell title="设置" is-link to="/setting">
-        <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
-      </mt-cell>
+      </mt-cell> -->
+      <a href="tel:0571-28990788">
+        <mt-cell title="管理规定">
+          <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
+        </mt-cell>
+      </a>
+      <a href="tel:0571-28990788">
+        <mt-cell title="联系我们">
+          <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
+        </mt-cell>
+      </a>
     </div>
     <div class="exit">
       <mt-button v-if="userAgent.weixin" @click.native="exit" type="primary" size="large">解除微信绑定</mt-button>
       <mt-button v-else @click.native="exit" type="primary" size="large">安全退出</mt-button>
     </div>
-    <footer-fix selected="personalCenter"></footer-fix>
+    <bottomBar selected="4"></bottomBar>
   </div>
 </template>
 <script>
@@ -76,6 +83,7 @@
   import {mapActions, mapState} from 'vuex';
   import {getMac} from '../plugins/utils';
   import {GetUserRaceRank, UpdateLoginStatus} from '../service/getData';
+  import { bottomBar } from '../components'
 
   Vue.component(Cell.name, Cell);
   Vue.component(Button.name, Button);
@@ -89,7 +97,7 @@
     created() {
     },
     mounted() {
-      this.isCeshi = /^ceshi[1-5]$/.test(this.userInfo.UserID);
+      this.isCeshi = /^ceshi[1-5]$/.test(this.userInfo.UserId);
     },
     computed: {
       ...mapState(['userInfo', 'userAgent']),
@@ -99,12 +107,12 @@
       ...mapActions(['saveUserInfo']),
       async exit() {
         let Mac = getMac();
-        await UpdateLoginStatus({UserID: this.userInfo.UserID, Mac});
+        await UpdateLoginStatus({UserID: this.userInfo.UserId, Mac});
         this.saveUserInfo({});
         this.$router.push({path: '/login'});
       },
       async getRankData() {
-        let data = await GetUserRaceRank({UserID: this.userInfo.UserID});
+        let data = await GetUserRaceRank({UserID: this.userInfo.UserId});
         this.rankData = data;
         if (data.result == 0) {
           MessageBox.alert(data.resultMessage);
@@ -113,6 +121,9 @@
         }
       },
     },
+    components: {
+      bottomBar
+    }
   };
 </script>
 

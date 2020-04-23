@@ -203,7 +203,7 @@
       },*/
       //班级详情
       async getClassDetail () {
-        let params = {tcId: this.tcId, UserID: this.userInfo.UserID}
+        let params = {tcId: this.tcId, UserID: this.userInfo.UserId}
         let data,data2
         Indicator.open()
         if (this.tcType == 'kz') {
@@ -228,7 +228,7 @@
       },*/
       //报名
       async signInClass () {
-        let params = {tcId: this.tcId, UserID: this.userInfo.UserID}
+        let params = {tcId: this.tcId, UserID: this.userInfo.UserId}
         let data = await UpdateTrainningStudentup(params)
         if (data.Result == 1) {
           this.isJoinClass = true

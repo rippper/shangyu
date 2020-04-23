@@ -9,21 +9,19 @@
     </header-fix>
     <div class="cell_list_one">
       <mt-cell title="用户名" :value="userInfo.Username"></mt-cell>
-      <mt-cell title="部门" :value="userInfo.GroupName"></mt-cell>
+      <mt-cell title="部门（单位）信息" :value="userInfo.Usergroup"></mt-cell>
       <mt-cell title="用户职务" :value="userInfo.UserZW"></mt-cell>
     </div>
     <div class="split"></div>
     <div class="cell_list_two">
-      <mt-cell title="必修课程学分" :value="userInfo.RequiredCredit"></mt-cell>
-      <mt-cell title="选修课程学分" :value="userInfo.ElectiveCredit"></mt-cell>
-       <mt-cell title="考试获得学分" :value="userInfo.ExamCredit"></mt-cell>
+      <mt-cell title="考试获得学分" :value="userInfo.ExamCredit"></mt-cell>
+      <mt-cell title="课程获得学分" :value="userInfo.CourseCredit"></mt-cell>
       <!--<mt-cell title="培训获得学分" :value="userInfo.TrainningCredit"></mt-cell> -->
       <mt-cell title="获得总学分" :value="userInfo.TotalCredit"></mt-cell>
     </div>
     <div class="split"></div>
     <div class="cell_list_three">
       <!-- <mt-cell title="要求必修学分" :value="userInfo.NeedRequiredCredit"></mt-cell> -->
-      <mt-cell title="要求必修学分" :value="15"></mt-cell>
       <mt-cell title="要求总学分" :value="userInfo.NeedCredit"></mt-cell>
       <mt-cell title="考核结果" :value="userInfo.PassFlag?'通过':'未通过'"></mt-cell>
       <mt-cell title="您的学分排名" :value="userInfo.ScoreRank"></mt-cell>
@@ -42,6 +40,7 @@
       return {}
     },
     mounted () {
+      console.log(this.userInfo)
       this.getUserInformation()
     },
     computed: {

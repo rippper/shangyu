@@ -97,7 +97,8 @@
       },
       async getLoginStatus() {
         let Mac = getMac();
-        let res = await CheckLoginStatus({UserID: this.userInfo.UserID, Mac});
+        console.log(this.userInfo.UserId)
+        let res = await CheckLoginStatus({UserId: this.userInfo.UserId, Mac});
         if (res == 1) {
           this.$router.push('/home');
         }
@@ -126,7 +127,7 @@
         Indicator.close();
         if (res.Result == 1 || res.Result == 6) {
           this.saveUserInfo(res);
-          // console.log(this.userInfo);
+          console.log(this.userInfo);
           if (this.Remember) {
             this.encrypt('a_app', this.Account);
             this.encrypt('p_app', this.Password);

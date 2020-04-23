@@ -2,15 +2,15 @@
 * 新闻中心
 */
 <template>
-  <div class="newsCenter container_both">
+  <div class="newsCenter container_top">
     <header-fix :title="articleTitle" fixed>
       <div slot="left">
         <a @click="goBack">
           <i class="webapp webapp-back"></i>
         </a>
-        <a @click="toggleNav" class="category_icon">
+        <!-- <a @click="toggleNav" class="category_icon">
           <i class="webapp webapp-category"></i>
-        </a>
+        </a> -->
       </div>
       <router-link slot="right" :to="{path: '/newsSearch', query:{id: channelId}}">
         <i class="webapp webapp-search"></i>
@@ -41,7 +41,6 @@
         </section>
       </div>
     </nav-slide>
-    <footer-fix></footer-fix>
   </div>
 </template>
 <script>
@@ -59,7 +58,7 @@ export default {
   mixins: [goBack],
   data() {
     return {
-      articleTitle: "新闻资讯",
+      articleTitle: "资讯中心",
       showSlide: false,
       articleCategory: [],
       channelId: "",

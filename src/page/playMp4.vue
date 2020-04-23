@@ -15,12 +15,10 @@
         :src="courseInfo.ONLINE_URL"
         controls
         style="object-fit:fill;"
-        x5-video-player-type="h5"
         webkit-playsinline="true"
         playsinline="true"
+        x5-playsinline="true"
         x-webkit-airplay="true"
-        x5-video-player-fullscreen="true"
-        x5-video-orientation="portraint"
       ></video>
       <audio v-if="playType == 'mp3'" id="myPlayer" :src="courseInfo.ONLINE_URL" controls></audio>
       <!--<video v-else id="myVideo" preload="meta" :src="courseDetails.OnlineUrl" controls></video>-->
@@ -87,7 +85,6 @@
         <i class="webapp webapp-close"></i>
       </a>
     </div>-->
-    <footer-fix></footer-fix>
   </div>
 </template>
 <script>
@@ -109,9 +106,7 @@ import {
   AddExperience,
   Auth,
   CheckLoginStatus,
-  GetExperience,
-  GetIsAllowLearn,
-  GetIsDenyUser,
+  GetExperience,  
   getSyncUserStudyData,
   RelatedCourse,
   singleUploadTimeNode
@@ -188,14 +183,13 @@ export default {
         mlink: 'https://afaki8.mlinks.cc/A0BP?Title=&Content=&Id=' + this.courseId + '&Type=Course&Token=' + localStorage.getItem('ASPXAUTH'),
         button: document.querySelector('a#btnOpenApp')
       })*/
-    this.isDenyUser();
     /* 获取media对象 */
     this.myPlayer = document.getElementById("myPlayer");
     try {
       this.mediaType = /\.(.*)$/.exec(this.courseInfo.ONLINE_URL)[1];
     } catch (error) {}
     /*获取课程详情*/
-    this.GetIsAllowLearn();
+    this.getCourseDetail(this.playFunc);
   },
   computed: {
     ...mapState(["courseInfo"])
@@ -213,19 +207,6 @@ export default {
     ...mapActions(["saveCourseInfo"]),
     togglePlayer(val) {
       this.playType = val;
-    },
-    // 判断能否看课程
-    async GetIsAllowLearn() {
-      let data = await GetIsAllowLearn({ UserID: this.userInfo.UserID });
-      if (data.result === "false") {
-        MessageBox.alert(`${data.resultMessage}`).then(action => {
-          // this.goBack()
-        });
-      }
-      this.getCourseDetail(this.playFunc);
-      this.checkTimer = setInterval(() => {
-        // this.checkLogin();
-      }, 30000);
     },
     /*微信签名*/
     async getWechatWxAuthModel() {
@@ -288,9 +269,9 @@ export default {
     },
     //课程详情
     async getCourseDetail(cb) {
-      console.log(this.userInfo.UserID);
+      console.log(this.userInfo.UserId);
       let data = await getSyncUserStudyData({
-        UserID: this.userInfo.UserID,
+        UserID: this.userInfo.UserId,
         CourseNumber: this.courseInfo.Course_Number
       });
       this.lastLocation = data.UserStudyInfoList[0].LastLocation;
@@ -321,7 +302,7 @@ export default {
       let TimeNode = timeFormat(this.myPlayer.currentTime);
       let duration = Math.ceil(this.myPlayer.duration / 60);
       let params = {
-        UserID: this.userInfo.UserID,
+        UserID: this.userInfo.UserId,
         CourseNumber: this.courseInfo.Course_Number,
         TimeNode,
         TotalTime: duration
@@ -518,7 +499,7 @@ export default {
     async checkLogin() {
       let Mac = getMac();
       try {
-        let res = await CheckLoginStatus({ UserID: this.userInfo.UserID, Mac });
+        let res = await CheckLoginStatus({ UserID: this.userInfo.UserId, Mac });
         if (res != 1) {
           clearInterval(this.checkTimer);
           this.updateProgress();
@@ -530,12 +511,6 @@ export default {
         this.updateProgress();
         clearInterval(this.updateTimer);
         this.$router.push({ path: "/login" });
-      }
-    },
-    async isDenyUser() {
-      let res = await GetIsDenyUser({ UserID: this.userInfo.UserID });
-      if (res.result == 1) {
-        MessageBox.alert(res.message);
       }
     }
   },

@@ -19,8 +19,9 @@
     </header-fix>
     <nav-slide :show="showSlide" @showChange="showChange">
       <div slot="left" class="category">
-        <div class="category_item" @click="changeYear(false)">本年</div>
-        <div class="category_item" @click="changeYear(true)">2016</div>
+        <div class="category_item" @click="changeYear(false,2020)">本年</div>
+        <div class="category_item" @click="changeYear(false,2019)">2019</div>
+        <div class="category_item" @click="changeYear(false,2018)">2018</div>
       </div>
       <div slot="right">
         <div v-if="!showHistory" class="date_select clearFix">
@@ -147,17 +148,21 @@
         this.togglePicker()
         this.getLearningData()
       },
-      async getLearningData (isHistory) {
+      async getLearningData (isHistory,Time) {
         this.noData = false
         this.noDataBg = false
         this.loading = true
         Indicator.open()
         let params,data
         if (isHistory) {
-          params = {Page: this.page, UserID: this.userInfo.UserID}
+          params = {Page: this.page, UserID: this.userInfo.UserId}
           data = await GetUserHistory(params)
         } else {
-          params = {Page: this.page, UserID: this.userInfo.UserID, ...this.selectedTime}
+          this.selectedTime = {
+            startTime: formatDate(new Date(Time + '-1-1'), 'yyyy-MM-dd'),
+            endTime: formatDate(new Date(Time + '-12-31'), 'yyyy-MM-dd'),
+          }
+          params = {Page: this.page, UserID: this.userInfo.UserId, ...this.selectedTime}
           data = await GetUserStatistics(params)
         }
         this.learningAllData = data
@@ -181,12 +186,12 @@
       toggleModel () {
         this.showModel = !this.showModel
       },
-      changeYear(isHistory) {
+      changeYear(isHistory, Time) {
         this.showHistory = isHistory
         this.page = 0
         this.learningData = []
         this.toggleNav()
-        this.getLearningData(isHistory)
+        this.getLearningData(isHistory, Time)
       }
     },
   }

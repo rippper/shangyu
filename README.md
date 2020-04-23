@@ -2,7 +2,7 @@
 
 > 微信公众号 + webapp
 
-苏州干部学习平台
+上虞干部学习平台
 ## 技术栈
 
 vue2 + vuex + vue-router + mintui + webpack + ES6/7 + axios + sass + flex + iconfont

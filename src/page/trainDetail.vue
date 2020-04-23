@@ -156,7 +156,7 @@
         let startTime = this.selectedTime.startTime
         let cendTime =  this.selectedTime.endTime
         Indicator.open()
-        let params = {UserID: this.userInfo.UserID, TypeId: this.TypeId, startTime, cendTime}
+        let params = {UserID: this.userInfo.UserId, TypeId: this.TypeId, startTime, cendTime}
         let res = {}
         if (this.showDataType == 'card') {
           res = await getUserTrainningClassKZ(params,{Page: this.page})

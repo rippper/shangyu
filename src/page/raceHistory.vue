@@ -25,7 +25,9 @@
       return {
         title: '历史测试记录',
         examId: 0,
-        dataList: []
+        dataList: [],
+        backType: this.$route.query.backLine,
+        keyword: this.$route.query.keyword
       }
     },
     created() {
@@ -39,7 +41,7 @@
     },
     methods: {
       async GetUserExamHistory() {
-        let data = await GetUserExamHistory({ UserID: this.userInfo.UserID, ExamID: this.examId })
+        let data = await GetUserExamHistory({ UserID: this.userInfo.UserId, ExamID: this.examId })
         // data = JSON.parse(data);
         this.dataList = data.ExamPaperList
         console.log(data)
@@ -48,7 +50,15 @@
         this.$router.push({ path: '/examResult', query: { examPaperId: id, examId: this.examId } })
       },
       goTestCenter() {
-        this.$router.push({ path: '/examCenter' })
+        if (this.backType == '1') {
+          this.$router.push({ path: '/onlineexam', query: { type: '0' } })
+        } else if (this.backType == '2') {
+          this.$router.push({ path: '/onlineexam', query: { type: '1' } })
+        } else if (this.backType == '3') {
+          this.$router.push({ path: '/examSearch', query: { keyword: this.keyword, linkType: 1 } })
+        } else {
+          this.$router.push({ path: '/examCenter' })
+        }
       }
     }
   }
@@ -71,7 +81,7 @@
         line-height: toRem(60px);
         .list1 {
           display: inline-block;
-          width: toRem(410px);
+          width: toRem(450px);
         }
         .reward {
           color: #3A7FB6;

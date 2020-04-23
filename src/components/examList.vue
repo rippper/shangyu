@@ -63,11 +63,19 @@
         type: Boolean,
         default: false
       },
+      backLine: {
+        type: String,
+        default: '0'
+      },
+      searchInfo: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
       async checkAttempt (item) {
         let id = item.ExamID
-        //let data = await GetIsAllowExam({UserID: this.userInfo.UserID, examId: id})
+        //let data = await GetIsAllowExam({UserID: this.userInfo.UserId, examId: id})
         // let total = Number(item.ATTEMPT_LIMIT)
         // let current = Number(item.lattemptnumber)
         // let endTime = item.END_DATE
@@ -104,7 +112,7 @@
               return;
             }
             let data = await UpdateExamReward({
-              UserID: this.userInfo.UserID,
+              UserID: this.userInfo.UserId,
               examId: item.ExamID,
               mobileNum: phoneNum
             })
@@ -119,7 +127,7 @@
         MessageBox.alert(`<p>手机号：${phoneNum}</p><p>奖励：${rewardInfo}</p>`, "奖励信息")
       },
       linkToHistory (examId) {
-        this.$router.push({path: '/raceHistory',query: {examId}})
+        this.$router.replace({path: '/raceHistory',query: { examId: examId, backLine: this.backLine, keyword: this.searchInfo }})
       }
     },
   }

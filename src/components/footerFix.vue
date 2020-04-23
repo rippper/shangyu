@@ -55,7 +55,7 @@
       ...mapActions(['saveUserInfo', 'saveAlertTimes']),
       async logOut() {
         let Mac = getMac();
-        await UpdateLoginStatus({UserID: this.userInfo.UserID, Mac});
+        await UpdateLoginStatus({UserID: this.userInfo.UserId, Mac});
         this.saveUserInfo({});
         this.saveAlertTimes(0);
         this.$router.push({path: '/login'});

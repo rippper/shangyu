@@ -6,79 +6,94 @@
     <!--头部-->
     <header-fix title="排行榜" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
+      <i class="webapp webapp-category" slot="right" @click="toggleNav"></i>
     </header-fix>
-    <mt-navbar v-model="selected">
-      <mt-tab-item id="1">学员排名</mt-tab-item>
-      <mt-tab-item id="2">课程排名</mt-tab-item>
-      <mt-tab-item id="3">地区排名</mt-tab-item>
-    </mt-navbar>
+    <nav-slide :show="showSlide" @showChange="showChange">
+      <div class="rl_leftpart" slot="left">
+        <ul>
+          <li>2015</li>
+          <li>2016</li>
+          <li>2017</li>
+          <li>2018</li>
+          <li>2019</li>
+          <li>2020</li>
+        </ul>
+      </div>
+      <div slot="right" class="category">
+        <mt-navbar v-model="selected">
+          <mt-tab-item id="1">学习排名</mt-tab-item>
+          <mt-tab-item id="2">课程排名</mt-tab-item>
+          <mt-tab-item id="3">单位排名</mt-tab-item>
+        </mt-navbar>
 
-    <!-- tab-container -->
-    <mt-tab-container v-model="selected">
-      <mt-tab-container-item id="1">
-        <table class="table">
-          <thead class="fixed_rank_title">
-          <tr>
-            <th class="rank">排名</th>
-            <th class="student">学员</th>
-            <th class="credit">学分</th>
-          </tr>
-          </thead>
-          <tbody class="fixed_rank_content">
-          <tr v-for="(item,index) in studentData" :key="item.index">
-            <td v-if="index<3" class="rank"
-                :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
-            <td v-if="index>=3" class="rank">{{item.index}}</td>
-            <td class="student">{{item.name}}</td>
-            <td class="credit">{{item.value}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="noDataBg" v-if="noDataBg1"></div>
-      </mt-tab-container-item>
-      <mt-tab-container-item id="2">
-        <table class="table">
-          <thead class="fixed_rank_title">
-          <tr>
-            <th class="rank">排名</th>
-            <th class="student">课程</th>
-            <th class="credit">播放次数</th>
-          </tr>
-          </thead>
-          <tbody class="fixed_rank_content">
-          <tr v-for="(item,index) in courseData" :key="item.index">
-            <td v-if="index<3" class="rank"
-                :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
-            <td v-if="index>=3" class="rank">{{item.index}}</td>
-            <td class="student">{{item.name}}</td>
-            <td class="credit">{{item.value}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="noDataBg" v-if="noDataBg2"></div>
-      </mt-tab-container-item>
-      <mt-tab-container-item id="3">
-        <table class="table">
-          <thead class="fixed_rank_title">
-          <tr>
-            <th class="rank">排名</th>
-            <th class="student">单位</th>
-            <th class="credit">学分</th>
-          </tr>
-          </thead>
-          <tbody class="fixed_rank_content">
-          <tr v-for="(item,index) in groupData" :key="item.index">
-            <td v-if="index<3" class="rank"
-                :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
-            <td v-if="index>=3" class="rank">{{item.index}}</td>
-            <td class="student">{{item.name}}</td>
-            <td class="credit">{{item.value}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="noDataBg" v-if="noDataBg3"></div>
-      </mt-tab-container-item>
-    </mt-tab-container>
+        <!-- tab-container -->
+        <mt-tab-container v-model="selected">
+          <mt-tab-container-item id="1">
+            <table class="table">
+              <thead class="fixed_rank_title">
+              <tr>
+                <th class="rank">排名</th>
+                <th class="student">学员</th>
+                <th class="credit">学分</th>
+              </tr>
+              </thead>
+              <tbody class="fixed_rank_content">
+              <tr v-for="(item,index) in studentData" :key="item.index">
+                <td v-if="index<3" class="rank"
+                    :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
+                <td v-if="index>=3" class="rank">{{item.index}}</td>
+                <td class="student">{{item.name}}</td>
+                <td class="credit">{{item.value}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="noDataBg" v-if="noDataBg1"></div>
+          </mt-tab-container-item>
+          <mt-tab-container-item id="2">
+            <table class="table">
+              <thead class="fixed_rank_title">
+              <tr>
+                <th class="rank">排名</th>
+                <th class="student">课程</th>
+                <th class="credit">播放次数</th>
+              </tr>
+              </thead>
+              <tbody class="fixed_rank_content">
+              <tr v-for="(item,index) in courseData" :key="item.index">
+                <td v-if="index<3" class="rank"
+                    :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
+                <td v-if="index>=3" class="rank">{{item.index}}</td>
+                <td class="student">{{item.name}}</td>
+                <td class="credit">{{item.value}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="noDataBg" v-if="noDataBg2"></div>
+          </mt-tab-container-item>
+          <mt-tab-container-item id="3">
+            <table class="table">
+              <thead class="fixed_rank_title">
+              <tr>
+                <th class="rank">排名</th>
+                <th class="student">单位</th>
+                <th class="credit">学分</th>
+              </tr>
+              </thead>
+              <tbody class="fixed_rank_content">
+              <tr v-for="(item,index) in groupData" :key="item.index">
+                <td v-if="index<3" class="rank"
+                    :class="{'rank_bg_one':index==0,'rank_bg_two':index==1,'rank_bg_three':index==2,}"></td>
+                <td v-if="index>=3" class="rank">{{item.index}}</td>
+                <td class="student">{{item.name}}</td>
+                <td class="credit">{{item.value}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="noDataBg" v-if="noDataBg3"></div>
+          </mt-tab-container-item>
+        </mt-tab-container>
+      </div>
+    </nav-slide>
   </div>
 </template>
 <script>
@@ -102,6 +117,7 @@
         noDataBg1: false,
         noDataBg2: false,
         noDataBg3: false,
+        showSlide: false,
       }
     },
     mounted () {
@@ -110,6 +126,12 @@
       this.getRankList('3')
     },
     methods: {
+      showChange(val) {
+        this.showSlide = val
+      },
+      toggleNav() {
+        this.showSlide = !this.showSlide
+      },
       //排行榜
       async getRankList (RankType) {
         let data = await GetRankInfoList({RankType})
@@ -141,17 +163,23 @@
   @import "../style/mixin";
 
   .rankList {
-    padding-top: toRem(260px);
+    padding-top: toRem(92px);
+    width: 100vw;
+    height: 100vh;
+    .category{
+      position: relative;
+    }
     .mint-navbar {
-      position: fixed;
-      top: toRem(92px);
+      position: absolute;
+      top: 0;
       left: 0;
       width: 100%;
       z-index: 10;
     }
+
     .fixed_rank_title {
       position: fixed;
-      top: toRem(182px);
+      top: toRem(90px);
       left: 0;
       width: 100%;
       background-color: $brand-primary;
@@ -159,7 +187,7 @@
     }
     .fixed_rank_content{
       position: fixed;
-      top: toRem(260px);
+      top: toRem(168px);
       left: 0;
       width: 100%;
       z-index: 10;

@@ -2,11 +2,14 @@
 * 课程中心
 */
 <template>
-  <div class="courseCenter container_both">
+  <div class="courseCenter container_top">
     <header-fix :title="courseTitle" fixed>
-      <a slot="left" @click="toggleNav">
-        <i class="webapp webapp-category"></i>
-      </a>
+      <div slot="left">
+        <i class="webapp webapp-back" @click.stop="goBack"></i>
+        <a @click="toggleNav">
+          <i class="webapp webapp-category"></i>
+        </a>
+      </div>
       <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link>
     </header-fix>
     <nav-slide :show="showSlide" @showChange="showChange">
@@ -23,7 +26,6 @@
         <skeleton-item v-else v-for="i in 10" :key="i"/>
       </div>
     </nav-slide>
-    <footer-fix selected="courseCenter"/>
   </div>
 </template>
 <script>
@@ -36,11 +38,14 @@
     getSyncUserStudyData,
     // singleUploadTimeNode
   } from '../service/getData'
+  import { goBack } from '../service/mixins'
   import { getStore, setStore } from "../plugins/utils";
+  import { bottomBar } from '../components'
 
   Vue.use(InfiniteScroll)
   Vue.component(MessageBox.name, MessageBox)
   export default {
+    mixins: [goBack],
     data() {
       return {
         courseTitle: '课程中心',
@@ -65,9 +70,6 @@
       this.getChannelInfoList()
       this.getCourseList()
       this.uploadProgress()
-    },
-    mounted() {
-
     },
     methods: {
       toggleNav() {
@@ -111,10 +113,10 @@
         this.loading = true
         !this.skeInit && Indicator.open()
         let data = await getCourseInfoList({
-          channelId: this.channelId,
+          channelName: this.courseTitle,
           Page: this.page,
           PageCount: 10,
-          UserID: this.userInfo.UserID
+          UserID: this.userInfo.UserId
         })
         Indicator.close()
         /* 课程 */
@@ -204,6 +206,9 @@
         //   setStore('singleProgress', singleStore)
         // }
       }
+    },
+    components: {
+      bottomBar
     },
     beforeRouteLeave(to, from, next) {
       MessageBox.close()

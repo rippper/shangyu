@@ -61,7 +61,6 @@
     <div v-if="iframeSrc">
       <iframe :src="iframeSrc" frameborder="0"></iframe>
     </div>
-    <footer-fix></footer-fix>
   </div>
 </template>
 <script>

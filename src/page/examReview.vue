@@ -197,11 +197,15 @@
     }
 
     .exam_footer {
+      height: toRem(110px);
       position: fixed;
       width: 100%;
-      bottom: toRem(20px);
+      bottom: 0;
       text-align: center;
       left: 0;
+      display: flex;
+      align-items: center;
+      background: #fff;
       /*line-height: 73px;*/
       @include flex();
 

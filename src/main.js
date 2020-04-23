@@ -41,7 +41,7 @@ const getLoginStatus = (next) => {
   let Mac = getMac();
   let userInfo = store.state.userInfo;
   CheckLoginStatus({
-    UserID: userInfo.UserID,
+    UserID: userInfo.UserId,
     Mac
   }).then(res => {
     res = Number(res);
@@ -68,6 +68,7 @@ router.beforeEach((to, from, next) => {
   }
   let title = to.meta.title;
   changeTitle(title);
+  next()
   if (to.name !== 'login') {
     if (JSON.stringify(store.state.userInfo) === '{}') {
       next({
@@ -92,22 +93,22 @@ router.afterEach((to, from) => {
   let agent = userAgent();
   setStore('userAgent', agent);
 });
-if (process.env.NODE_ENV == 'development') {
+// if (process.env.NODE_ENV == 'development') {
   new Vue({
     router,
     store
   }).$mount('#app');
-} else {
-  let agent = userAgent();
-  if (!(agent.mobile || agent.android || agent.iPhone || agent.iPad || agent.weixin || agent.qq)) {
-    new Vue({
-      template: `<h1 style="text-align: center;font-size: 26px;padding-top: 50px;">请在手机浏览器或微信中打开</h1>`
-    }).$mount('#app');
-  } else {
-    new Vue({
-      router,
-      store
-    }).$mount('#app');
-  }
-}
+// } else {
+//   let agent = userAgent();
+//   if (!(agent.mobile || agent.android || agent.iPhone || agent.iPad || agent.weixin || agent.qq)) {
+//     new Vue({
+//       template: `<h1 style="text-align: center;font-size: 26px;padding-top: 50px;">请在手机浏览器或微信中打开</h1>`
+//     }).$mount('#app');
+//   } else {
+//     new Vue({
+//       router,
+//       store
+//     }).$mount('#app');
+//   }
+// }
 export default router;

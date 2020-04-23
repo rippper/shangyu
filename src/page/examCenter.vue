@@ -2,13 +2,13 @@
 * 在线测试
 */
 <template>
-  <div class="examCenter container_both">
+  <div class="examCenter container_top">
     <header-fix :title="examTitle" fixed>
       <!--<a slot="left" @click="toggleNav">
         <i class="webapp webapp-category"></i>
       </a>-->
-      <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
-      <div slot="right" class="clearFix">
+      <i class="webapp webapp-back" @click.stop="goGuide" slot="left"></i>
+      <router-link slot="right" :to="{ path: '/examSearch', query: { linkType: 2 } }"><i class="webapp webapp-search"></i></router-link> 
         <!-- <router-link class="pull-right" to="/examSearch">
           <i class="webapp webapp-search"></i>
         </router-link> -->
@@ -17,7 +17,6 @@
           <i v-if="showFilter" class="webapp webapp-less"></i>
           <i v-if="!showFilter" class="webapp webapp-moreunfold"></i>
         </a>-->
-      </div>
     </header-fix>
     <div class="container">
       <!--<mt-navbar v-model="tabIndex">-->
@@ -94,13 +93,11 @@
         <i v-if="examType=='UnJoin'" class="webapp webapp-selected"></i>
       </p>
     </div>-->
-    <footer-fix selected="examCenter"></footer-fix>
   </div>
 </template>
 <script>
   import Vue from 'vue'
   import { mapState } from 'vuex'
-  import { goBack } from "../service/mixins";
   import { Indicator, InfiniteScroll, Navbar, TabContainer, TabContainerItem } from 'mint-ui'
   import { GetExamListAPI2 } from '../service/getData'
 
@@ -109,10 +106,9 @@
   Vue.component(TabContainer.name, TabContainer)
   Vue.component(TabContainerItem.name, TabContainerItem)
   export default {
-    mixins: [goBack],
     data () {
       return {
-        examTitle: '在线测试',
+        examTitle: '考试列表',
         tabIndex: "1",
         /*showFilter: false, //是否显示筛选
         showSlide: false, //是否显示滑动
@@ -169,7 +165,7 @@
         this.finishNoDataBg = false
         this.loading = true
         Indicator.open()
-        let data = await GetExamListAPI2({Page: this.finishPage, UserID: this.userInfo.UserID, finish: 1})
+        let data = await GetExamListAPI2({Page: this.finishPage, UserID: this.userInfo.UserId, finish: 1})
         Indicator.close()
         let list = []
         if (Array.isArray(data.ExamInfoList)) {
@@ -187,12 +183,15 @@
         this.loading = false
         this.finishPage += 1
       },*/
+      goGuide () {
+        this.$router.push({ path: '/examGuide' })
+      },
       async getUnFinishExamList () {
         this.unFinishNoData = false
         this.unFinishNoDataBg = false
         this.loading = true
         Indicator.open()
-        let data = await GetExamListAPI2({Page: this.unFinishPage, UserID: this.userInfo.UserID, finish: 0})
+        let data = await GetExamListAPI2({Page: this.unFinishPage, UserID: this.userInfo.UserId, finish: 0})
         Indicator.close()
         let list = []
         if (Array.isArray(data.ExamInfoList)) {

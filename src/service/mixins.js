@@ -10,6 +10,7 @@ export const goBack = {
 export const toPlay = {
   methods: {
     toPlay: function (type, id) {
+      console.log(type)
       if (type == 'nstdc') {
         this.$router.push({path: '/playMp4', query: {id}})
       } else if (type == 'jyzxnews') {

@@ -2,7 +2,7 @@
 * 修改密码
 */
 <template>
-  <div class="change_pwd container_both">
+  <div class="change_pwd container_top">
     <!--头部-->
     <header-fix title="修改密码" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
@@ -22,7 +22,7 @@
     <div class="submit_edit">
       <mt-button type="primary" size="large" @click.native="updatePwd">提交</mt-button>
     </div>
-    <footer-fix></footer-fix>
+    <!-- <bottom-bar></bottom-bar> -->
   </div>
 </template>
 <script>
@@ -32,6 +32,7 @@
   import {getMac} from '../plugins/utils';
   import {changeUserPassword, UpdateLoginStatus} from '../service/getData';
   import {goBack} from '../service/mixins';
+  // import { bottomBar } from '../components'
 
   Vue.component(Button.name, Button);
   export default {
@@ -64,18 +65,28 @@
         } else if (!this.isPassConfirm) {
           Toast({message: '两次输入新密码不一致', position: 'bottom'});
         } else {
-          this.sendData.UserID = this.userInfo.UserID;
+          let checkType = this.checkpasswords(this.sendData.newPwd)
+          if (!checkType) {
+            MessageBox('提示', '密码安全性太低！(至少8-16个字符，至少1个大写字母，1个小写字母和1个数字，其他可以是任意字符)')
+            return false
+          }
+          this.sendData.UserID = this.userInfo.UserId;
           let data = await changeUserPassword(this.sendData);
-          if (data.Result == '修改成功') {
-            Toast({message: '修改成功,请重新登陆', position: 'bottom'});
+          if (data.Result == '1') {
+            Toast({message: '修改成功,请重新登录', position: 'bottom'});
             let Mac = getMac();
             await UpdateLoginStatus({UserID: this.userInfo.UserID, Mac});
             this.saveUserInfo({});
             this.$router.push('/login');
           } else {
-            MessageBox('警告', data.Result);
+            MessageBox('警告', '密码修改失败，请确认旧密码是否输入正确。');
           }
         }
+      },
+      checkpasswords (password) {
+        let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/;
+        let result = reg.test(password)
+        return result
       }
     },
     watch: {
@@ -98,6 +109,9 @@
         deep: true
       }
     },
+    // components: {
+    //   bottomBar
+    // },
     beforeRouteLeave(to, from, next) {
       MessageBox.close();
       next();
@@ -133,7 +147,7 @@
 
       .error {
         position: absolute;
-        right: toRem(-150px);
+        right: toRem(-225px);
         top: toRem(28px);
         color: $brand-error;
         transition: all 0.5s;

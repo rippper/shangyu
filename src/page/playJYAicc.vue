@@ -8,28 +8,27 @@
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
     </header-fix>
     <div class="player">
-      <video v-show="playType == 'mp4'" id="myPlayermp4"
-             preload="meta"
-             poster="../assets/mp4-play.png"
-             :src="activeNode.Mp4"
-             controls
-             style="object-fit:fill"
-             x5-video-player-type="h5"
-             webkit-playsinline="true"
-             playsinline="true"
-             x-webkit-airplay="true"
-             x5-video-player-fullscreen="true"
-             x5-video-orientation="portraint"
-             autoplay="autoplay">
+      <video 
+        v-show="playType == 'mp4'" 
+        id="myPlayermp4"
+        preload="meta"
+        :src="activeNode.Mp4"
+        controls
+        style="object-fit:fill"
+        x-webkit-airplay="true"
+        x5-playsinline="true"
+        webkit-playsinline="true"
+        playsinline="true"
+        autoplay="autoplay">
       </video>
-      <audio v-show="playType == 'mp3'" id="myPlayermp3" :src="activeNode.Mp3" controls></audio>
+      <!-- <audio v-show="playType == 'mp3'" id="myPlayermp3" :src="activeNode.Mp3" controls></audio> -->
     </div>
-    <div class="toggle_play">
+    <!-- <div class="toggle_play">
       <mt-button :type="playType == 'mp4'?'primary':'default'" size="small" @click="togglePlayer('mp4')">视频播放
       </mt-button>
       <mt-button :type="playType == 'mp3'?'primary':'default'" size="small" @click="togglePlayer('mp3')">音频播放
       </mt-button>
-    </div>
+    </div> -->
     <div class="error_alert" v-show="progressStack.length > 0">
       <span>提交进度失败，请手动提交</span>
       <mt-button class="upload_btn" type="default" size="small" @click.native="uploadProgress">提交进度</mt-button>
@@ -75,7 +74,6 @@
         </header-fix>
       </add-notes>
     </transition>
-    <footer-fix></footer-fix>
   </div>
 </template>
 <script>
@@ -85,8 +83,6 @@
   import {formatDate, getMac, getStore, setStore} from '../plugins/utils';
   import {
     CheckLoginStatus,
-    GetIsAllowLearn,
-    GetIsDenyUser,
     getSyncUserStudyData,
     RelatedCourse
   } from '../service/getData';
@@ -147,7 +143,6 @@
       this.progressStack = store[this.courseId] || [];
     },
     mounted() {
-      this.isDenyUser();
       /*获取video对象*/
       this.myPlayer = document.getElementById('myPlayermp4');
       /*获取课程详情*/
@@ -189,7 +184,7 @@
       //课程详情
       async getCourseDetail() {
         let data = await getSyncUserStudyData({
-          UserID: this.userInfo.UserID,
+          UserID: this.userInfo.UserId,
           CourseNumber: this.courseInfo.Course_Number
         });
         this.uploadData = data;
@@ -210,12 +205,6 @@
       },
       // 判断能否看课程
       async GetIsAllowLearn() {
-        let data = await GetIsAllowLearn({UserID: this.userInfo.UserID});
-        if (data.result === 'false') {
-          MessageBox.alert(`${data.resultMessage}`).then(action => {
-            // this.goBack();
-          });
-        }
         this.getCourseDetail();
         this.checkTimer = setInterval(() => {
           this.checkLogin();
@@ -238,7 +227,6 @@
         obj.UserStudyInfoList[0].CurrentProgress = progress;
         obj.UserStudyInfoList[0].LastLocation = Time;
         obj.UserStudyInfoList[0].LastNodeID = NodeId;
-        console.log(Status);
         if (Status == '' || !Status) {
           Status = 'S';
         }
@@ -246,7 +234,7 @@
         this.nodeList[this.activeNodeIndex] = this.activeNode;
         obj.UserStudyInfoList[0].NodeList = [this.activeNode];
         let params = {
-          UserID: this.userInfo.UserID,
+          UserID: this.userInfo.UserId,
           CourseNumber: this.courseId,
           data: JSON.stringify(obj)
         };
@@ -391,7 +379,6 @@
         } else {
           for (let i = 0; i < this.nodeList.length; i++) {
             let item = this.nodeList[i];
-            console.log(item.Status);
             if (item.Status == 'S' || !item.Status) {
               MessageBox.alert('您有未完成的章节，请到目录里确认');
               return;
@@ -426,13 +413,12 @@
       /*保存笔记*/
       saveNotes() {
         this.toggleNotes();
-        console.log('保存笔记', this.addNotesData);
       },
       /*每30秒调用一次*/
       async checkLogin() {
         let Mac = getMac();
         try {
-          let res = await CheckLoginStatus({UserID: this.userInfo.UserID, Mac});
+          let res = await CheckLoginStatus({UserID: this.userInfo.UserId, Mac});
           if (res != 1) {
             Toast({Message: '账号已退出，请重新登录'});
             clearInterval(this.checkTimer);
@@ -446,12 +432,6 @@
           this.updateProgress(this.activeNode.NodeID, this.locationTime, this.activeNode.Status);
           clearInterval(this.updateTimer);
           this.$router.push({path: '/login'});
-        }
-      },
-      async isDenyUser() {
-        let res = await GetIsDenyUser({UserID: this.userInfo.UserID});
-        if (res.result == 1) {
-          MessageBox.alert(res.message);
         }
       }
     },
