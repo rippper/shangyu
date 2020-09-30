@@ -28,7 +28,8 @@
                infinite-scroll-distance="10">
         <course-list :course-data="courseData"
                      :no-data-bg="noDataBg"
-                     :no-data="noData">
+                     :no-data="noData"
+                     :my-course="myCourse">
         </course-list>
       </section>
     </search>
@@ -38,7 +39,7 @@
   import Vue from 'vue'
   import { mapState } from 'vuex'
   import { Indicator, InfiniteScroll } from 'mint-ui'
-  import { getCourseInfoList } from '../service/getData'
+  import { getCourseInfoList, getUserCourseInfo } from '../service/getData'
   import { goBack } from '../service/mixins'
   import { getStore, setStore, removeStore, unique } from '../plugins/utils'
 
@@ -57,7 +58,9 @@
         noData: false,
         noDataBg: false,
         searchHistory: [],
-        year: ''
+        year: '',
+        searchType: this.$route.query.Type || 'studying',
+        myCourse: false
       }
     },
     computed: {
@@ -89,17 +92,33 @@
         this.loading = true
         this.oldKeyword = this.keyword //记录搜索keyword
         Indicator.open()
-        let params = {
-          UserID: this.userInfo.UserId,
-          Page: this.page, 
-          Keyword: this.keyword,
-          PageCount: 6,
-          ...options}
-        let data = await getCourseInfoList(params)
-        Indicator.close()
         let list = []
-        if (Array.isArray(data.CourseInfoList)) {
-          list = data.CourseInfoList
+        if (this.searchType == 'studying') {
+          this.myCourse = false
+          let params = {
+            UserID: this.userInfo.UserId,
+            Page: this.page, 
+            Keyword: this.keyword,
+            PageCount: 6,
+            ...options
+          }
+          let data = await getCourseInfoList(params)
+          Indicator.close()
+          if (Array.isArray(data.CourseInfoList)) {
+            list = data.CourseInfoList
+          }
+        } else if (this.searchType == 'finish') {
+          this.myCourse = true
+          let data = await getUserCourseInfo({
+            UserID: this.userInfo.UserId,
+            Finish: 1,
+            Page: this.page,
+            coursename: this.keyword
+          })
+          Indicator.close()
+          if (Array.isArray(data.UserCourseInfoList)) {
+            list = data.UserCourseInfoList
+          }
         }
         if (list.length == 0 && this.page > 1) {
           this.noData = true

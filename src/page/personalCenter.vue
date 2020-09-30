@@ -2,77 +2,55 @@
 * 个人中心
 */
 <template>
-  <div class="personalCenter container_bottom">
-    <div class="person_top">
-      <img src="../assets/person_cener_avatar.png" alt="">
-      <div class="my_info">
-        <h4>{{userInfo.Username}}</h4>
-        <p>
-          学分：{{userInfo.TotalCredit}}
-          <span class="shuxian">|</span>
-          排行：{{userInfo.ScoreRank}}
-          <!--<span class="shuxian">|</span>
-          学习币：{{userInfo.Cion}}-->
-        </p>
+  <div class="personalCenter" :style="'height:' + height + 'px'">
+    <div class="personalCenter_inner">
+      <div class="person_top">
+        <img src="../assets/person_cener_avatar.png" alt="">
+        <div class="my_info">
+          <h4>{{userInfo.Username}}</h4>
+          <p>
+            学分：{{userInfo.TotalCredit}}
+            <span class="shuxian">|</span>
+            排行：{{userInfo.ScoreRank}}
+            <!--<span class="shuxian">|</span>
+            学习币：{{userInfo.Cion}}-->
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="cell_list_one">
-      <mt-cell title="已完成的课程" is-link to="/myFinishCourse">
-        <i slot="icon" class="webapp webapp-kecheng" style="color: #ce76a4;"></i>
-      </mt-cell>
-      <mt-cell title="已完成的考试" is-link to="/myExam">
-        <i slot="icon" class="webapp webapp-kecheng" style="color: #e95c2c;"></i>
-      </mt-cell>
-      <mt-cell title="我的学分" is-link to="/myCredit">
-        <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
-      </mt-cell>
-      <mt-cell title="学分排行" is-link to="/rankList">
-        <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
-      </mt-cell>
-    </div>
-    <div class="cell_list_two">
-      <!-- <mt-cell title="在线测试" is-link to="/examCenter">
-        <i slot="icon" class="webapp webapp-exam" style="color: #49e2fe;"></i>
-      </mt-cell>
-      <mt-cell title="在线测试排名" is-link @click.native="getRankData">
-        <i slot="icon" class="webapp webapp-account" style="color: #49e2fe;"></i>
-      </mt-cell>
-      <mt-cell title="在线测试题库" is-link to="/pdfList">
-        <i slot="icon" class="webapp webapp-form" style="color: #49e2fe;"></i>
-      </mt-cell> -->
-      <!--<mt-cell title="我的课程" is-link to="/myCourse">
-        <i slot="icon" class="webapp webapp-kecheng" style="color: #ce76a4;"></i>
-      </mt-cell>-->
-      <!--<mt-cell title="我的考试" is-link to="/examHistory">
-        <i slot="icon" class="webapp webapp-exam" style="color: #49e2fe;"></i>
-      </mt-cell>-->
-    </div>
-    <div class="cell_list_two">
-      <!--<mt-cell title="站内信息" is-link to="/notice">
-        <i slot="icon" class="webapp webapp-advise" style="color: #a59be7;"></i>
-      </mt-cell>
-      <mt-cell title="操作指南" is-link to="/newsDetails?id=3">
-        <i slot="icon" class="webapp webapp-book" style="color: #f5c754;"></i>
-      </mt-cell>-->
-    </div>
-    <div class="cell_list_three">
-      <!-- <mt-cell title="上传进度" is-link to="/uploadProgress">
-        <i slot="icon" class="webapp webapp-set" style="color: #00ce6a;"></i>
-      </mt-cell> -->
-      <a href="tel:0571-28990788">
-        <mt-cell title="管理规定">
-          <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
+      <div class="cell_list_one">
+        <mt-cell title="已完成的课程" is-link to="/myFinishCourse">
+          <i slot="icon" class="webapp webapp-kecheng" style="color: #ce76a4;"></i>
         </mt-cell>
-      </a>
-      <a href="tel:0571-28990788">
-        <mt-cell title="联系我们">
-          <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
+        <mt-cell title="已完成的考试" is-link to="/myExam">
+          <i slot="icon" class="webapp webapp-kecheng" style="color: #e95c2c;"></i>
         </mt-cell>
-      </a>
-    </div>
-    <div class="exit">
-      <mt-button v-if="userAgent.weixin" @click.native="exit" type="primary" size="large">解除微信绑定</mt-button>
-      <mt-button v-else @click.native="exit" type="primary" size="large">安全退出</mt-button>
+        <mt-cell title="我的学分" is-link to="/myCredit">
+          <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
+        </mt-cell>
+        <mt-cell title="学习排行" is-link to="/rankList">
+          <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
+        </mt-cell>
+        <mt-cell title="学习档案" is-link to="/historyYearScore">
+          <i slot="icon" class="webapp webapp-kecheng" style="color: #00ce6a;"></i>
+        </mt-cell>
+      </div>
+      <div class="cell_list_between"></div>
+      <div class="cell_list_three">
+        <router-link :to="{ path: '/newsDetails', query: { ref: '', type: '管理规定' } }">
+          <mt-cell title="管理规定">
+            <i slot="icon" class="webapp webapp-information" style="color: #ec80c6;"></i>
+          </mt-cell>
+        </router-link>
+        <router-link :to="{ path: '/newsDetails', query: { ref: 'http://www.sygj.org.cn/article/padarticle.aspx?id=35', type: '联系我们' } }">
+          <mt-cell title="联系我们">
+            <i slot="icon" class="webapp webapp-set" style="color: #ec80c6;"></i>
+          </mt-cell>
+        </router-link>
+      </div>
+      <div class="exit" v-show="appType != 'app'">
+        <mt-button v-if="userAgent.weixin" @click.native="exit" type="primary" size="large">解除微信绑定</mt-button>
+        <mt-button v-else @click.native="exit" type="primary" size="large">安全退出</mt-button>
+      </div>
     </div>
     <bottomBar selected="4"></bottomBar>
   </div>
@@ -81,7 +59,7 @@
   import {Button, Cell, MessageBox} from 'mint-ui';
   import Vue from 'vue';
   import {mapActions, mapState} from 'vuex';
-  import {getMac} from '../plugins/utils';
+  import { getMac } from '../plugins/utils';
   import {GetUserRaceRank, UpdateLoginStatus} from '../service/getData';
   import { bottomBar } from '../components'
 
@@ -92,15 +70,21 @@
       return {
         isCeshi: false,
         rankData: {},
+        height: ''
       };
     },
-    created() {
+    computed: {
+      ...mapState(['userInfo', 'userAgent', 'appType']),
     },
     mounted() {
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.isCeshi = /^ceshi[1-5]$/.test(this.userInfo.UserId);
-    },
-    computed: {
-      ...mapState(['userInfo', 'userAgent']),
     },
     methods: {
 
@@ -131,8 +115,15 @@
   @import "../style/mixin";
 
   .personalCenter {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
     background-color: $fill-body;
-
+    .personalCenter_inner{
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
     .person_top {
       width: 10rem;
       height: toRem(390px);
@@ -172,13 +163,16 @@
       padding: 0 toRem(30px);
       background-color: $fill-base;
     }
-
+    .cell_list_between{
+      width: 100%;
+      height: toRem(20px);
+    }
     .cell_list_two {
       margin: toRem(30px) 0;
     }
 
     .exit {
-      padding: toRem(50px) toRem(30px) toRem(10px) toRem(30px);
+      padding: toRem(50px) toRem(30px) toRem(178px) toRem(30px);
     }
 
     .webapp {

@@ -15,7 +15,7 @@
         <exam-list :exam-data="examData"
                    :no-data-bg="noDataBg"
                    :no-data="noData"
-                   :backLine="'3'"
+                   :backLine="passType == 1 ? 4 : 3"
                    :searchInfo="keyword"
                    >
         </exam-list>
@@ -28,6 +28,7 @@
   import { Indicator, InfiniteScroll } from 'mint-ui'
   import { GetExamList } from '../service/getData'
   import { goBack } from '../service/mixins'
+  import { mapState } from 'vuex'
 
   Vue.use(InfiniteScroll)
   export default {
@@ -44,8 +45,12 @@
         page: 1,
         noData: false,
         noDataBg: false,
-        linkType: this.$route.query.linkType
+        linkType: this.$route.query.linkType,
+        passType: this.$route.query.examType || 0
       }
+    },
+    computed: {
+      ...mapState(['userInfo'])
     },
     mounted () {
       if (this.keyword != '') {
@@ -59,6 +64,8 @@
           this.$router.push({ path: '/onlineExam' })
         } else if (this.linkType == 2) {
           this.$router.push({ path: '/examCenter' })
+        } else if (this.linkType == 3) {
+          this.$router.push({ path: '/myExam' })
         }
       },
       async getExamList () {
@@ -69,10 +76,11 @@
         Indicator.open()
         let data = await GetExamList({
           Keyword: this.keyword,
+          UserID: this.userInfo.UserId,
           ExamType: this.examType,
           TypeId: this.typeId,
           Page: this.page,
-          finish: 2
+          finish: this.passType
         })
         Indicator.close()
         if (data.totalCount) {

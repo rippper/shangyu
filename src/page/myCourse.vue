@@ -2,42 +2,26 @@
 * 我的课程
 */
 <template>
-  <div class="my_course container_both">
-    <header-fix title="我的课程" fixed>
+  <div class="my_course" :style="'height:' + height + 'px'">
+    <header-fix title="正在学习的课程" fixed>
       <!-- <mb-tab slot="title" v-model="tabType">
         <mb-tab-item id="0">未完成</mb-tab-item>
         <mb-tab-item id="1">已完成</mb-tab-item>
       </mb-tab> -->
-      <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link> 
+      <router-link slot="right" :to="{ path: '/courseSearch', query: { Type: 'studying' } }"><i class="webapp webapp-search"></i></router-link> 
     </header-fix>
     <div class="my_course_container">
-      <mt-tab-container v-model="tabType">
-        <mt-tab-container-item id="0">
-          <section v-if="tabType === '0'" v-infinite-scroll="getMyUnFinishCourse"
-                   infinite-scroll-disabled="loading"
-                   infinite-scroll-immediate-check="immediate"
-                   infinite-scroll-distance="10">
-            <course-list :course-data="courseUnFinishData"
-                         :no-data-bg="noUfDataBg"
-                         :no-data="noUfData"
-                         :show-upload-btn="true"
-                         my-course>
-            </course-list>
-          </section>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="1">
-          <section v-if="tabType === '1'" v-infinite-scroll="getMyFinishCourse"
-                   infinite-scroll-disabled="loading"
-                   infinite-scroll-immediate-check="immediate"
-                   infinite-scroll-distance="10">
-            <course-list :course-data="courseFinishData"
-                         :no-data-bg="noFDataBg"
-                         :no-data="noFData"
-                         my-course>
-            </course-list>
-          </section>
-        </mt-tab-container-item>
-      </mt-tab-container>
+      <div class="my_course_list" v-if="tabType === '0'" v-infinite-scroll="getMyUnFinishCourse"
+              infinite-scroll-disabled="loading"
+              infinite-scroll-immediate-check="immediate"
+              infinite-scroll-distance="10">
+        <course-list :course-data="courseUnFinishData"
+                    :no-data-bg="noUfDataBg"
+                    :no-data="noUfData"
+                    :show-upload-btn="true"
+                    my-course>
+        </course-list>
+      </div>
     </div>
     <bottom-bar selected="2"></bottom-bar>
   </div>
@@ -70,13 +54,20 @@
         finishPage: 1,
         startX: 0,
         endX: 0,
+        height: ''
       }
     },
     computed: {
-      ...mapState(['userInfo'])
+      ...mapState(['userInfo', 'userAgent', 'appType'])
     },
     mounted () {
-      // this.getMyFinishCourse()
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.getMyUnFinishCourse()
       var element = this.$el
       element.addEventListener('touchstart', (event) => {
@@ -184,5 +175,17 @@
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
-
+@import '../style/mixin.scss';
+.my_course{
+  width: 100%;
+  position: relative;
+  .my_course_container{
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    .my_course_list{
+      padding: toRem(92px) 0 toRem(145px);
+    }
+  }
+}
 </style>

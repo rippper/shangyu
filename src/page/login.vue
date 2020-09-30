@@ -46,7 +46,7 @@
   import Vue from 'vue';
   import {mapActions, mapState} from 'vuex';
   import {getMac, getStore, setStore} from '../plugins/utils';
-  import {CheckLoginStatus, ValidateUser} from '../service/getData';
+  import {CheckLoginStatus, ValidateUser, ValidateAutoLogin} from '../service/getData';
 
   Vue.component(Button.name, Button);
 
@@ -62,7 +62,10 @@
         key: 'jy365jy365jy365y',
         iv: '0392039203920300',
         pwError: false,
-        acError: false
+        acError: false,
+        UserID: this.$route.query.userid || '',
+        idcard: this.$route.query.idcard || '',
+        ukey: this.$route.query.key || ''
       };
     },
     created() {
@@ -70,7 +73,11 @@
       this.getUserAgent();
     },
     mounted() {
-      // console.log(JSON.stringify(this.userInfo))
+      if (this.$route.query.type == 'app') {
+        this.saveAppType(this.$route.query.type)
+      } else {
+        this.saveAppType('')
+      }
       if (JSON.stringify(this.userInfo) != '{}') {
         this.getLoginStatus();
       }
@@ -83,12 +90,13 @@
       this.Account = this.decrypt(localStorage.getItem('a_app'));
       this.Password = this.decrypt(localStorage.getItem('p_app'));
       this.Remember = getStore('remember');
+      this.ValidateAutoLogin()
     },
     computed: {
       ...mapState(['userAgent', 'wxLoginUrl', 'wxIndexUrl', 'userInfo'])
     },
     methods: {
-      ...mapActions(['getUserAgent', 'saveUserInfo']),
+      ...mapActions(['getUserAgent', 'saveUserInfo', 'saveAppType']),
       focus(e) {
         e.target.parentNode.style.boxShadow = '0 0 0.2rem 0 #3a7fb6';
       },
@@ -153,6 +161,24 @@
           MessageBox('警告', '领航平台未开通');
         } else {
           MessageBox('警告', '登陆异常');
+        }
+      },
+      /*单点登录*/
+      async ValidateAutoLogin() {
+        if (!this.UserID || !this.idcard || !this.ukey) {
+          return
+        }
+        let msg = await ValidateAutoLogin({
+          UserID: this.UserID,
+          idcard: this.idcard,
+          key: this.ukey
+        })
+        if (msg.result == 1) {
+          this.Account = msg.userid
+          this.Password = msg.pwd
+          this.clickLogin()
+        } else {
+          Toast({message: '错误信息', position: 'bottom'});
         }
       },
       /*加密*/

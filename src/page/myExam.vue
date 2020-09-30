@@ -1,7 +1,8 @@
 <template>
-    <div class="myexam container_top">
+    <div class="myexam" :style="'height:' + height + 'px'">
         <headerFix title="已完成的考试" fixed>
             <i class="webapp webapp-back" @click.stop="turnBack" slot="left"></i>
+            <router-link slot="right" :to="{ path: '/examSearch', query: { linkType: 3, examType: 1 } }"><i class="webapp webapp-search"></i></router-link>
         </headerFix>
         <div class="em_examlist">
             <ul
@@ -36,14 +37,25 @@ export default {
     data () {
         return {
             examList: [],
-            Page: 0,
+            Page: 1,
             PageCount: 10,
             totalCount: 0,
             showAll: false,
-            loading: false
+            loading: false,
+            height: ''
         }
     },
+    computed: {
+        ...mapState(['userInfo', 'userAgent', 'appType'])
+    },
     mounted () {
+        if (this.userAgent.android) {
+            this.height = window.innerHeight
+        } else if (this.userAgent.ios && this.appType == 'app') {
+            this.height = window.innerHeight - 46
+        } else if (this.userAgent.ios && this.appType != 'app') {
+            this.height = window.innerHeight
+        }
         this.render()
     },
     methods: {
@@ -72,9 +84,6 @@ export default {
             }
         }
     },
-    computed: {
-        ...mapState(['userInfo'])
-    },
     components: {
         headerFix
     }
@@ -89,8 +98,11 @@ export default {
         background: #fff;
         .em_examlist{
             width: 100%;
+            height: 100%;
+            overflow-y: auto;
             ul{
                 width: 100%;
+                padding-top: toRem(98px);
                 .em_el_listItem{
                     width: toRem(690px);
                     height: toRem(204px);

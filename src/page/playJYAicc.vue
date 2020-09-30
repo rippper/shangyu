@@ -2,85 +2,78 @@
 * JYAicc播放页
 */
 <template>
-  <div class="play_Jyaicc container_both">
+  <div class="play_Jyaicc" :style="'height:' + height + 'px'">
     <!--头部-->
     <header-fix :title="courseDetails.CourseName" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
     </header-fix>
-    <div class="player">
-      <video 
-        v-show="playType == 'mp4'" 
-        id="myPlayermp4"
-        preload="meta"
-        :src="activeNode.Mp4"
-        controls
-        style="object-fit:fill"
-        x-webkit-airplay="true"
-        x5-playsinline="true"
-        webkit-playsinline="true"
-        playsinline="true"
-        autoplay="autoplay">
-      </video>
-      <!-- <audio v-show="playType == 'mp3'" id="myPlayermp3" :src="activeNode.Mp3" controls></audio> -->
+    <div class="play_jyaicc_inner">
+      <div class="player">
+        <video 
+          v-show="playType == 'mp4'" 
+          id="myPlayermp4"
+          preload="meta"
+          :src="activeNode.Mp4"
+          controls
+          style="object-fit:fill"
+          x-webkit-airplay="true"
+          x5-playsinline="true"
+          webkit-playsinline="true"
+          playsinline="true"
+          autoplay="autoplay"
+        >
+        </video>
+        <!-- <audio v-show="playType == 'mp3'" id="myPlayermp3" :src="activeNode.Mp3" controls></audio> -->
+      </div>
+      <div class="course_detail">
+        <mt-navbar v-model="selected">
+          <mt-tab-item id="introduce">介绍</mt-tab-item>
+          <mt-tab-item id="catalogue">目录</mt-tab-item>
+        </mt-navbar>
+        <!-- tab-container -->
+        <mt-tab-container v-model="selected">
+          <mt-tab-container-item id="introduce">
+            <course-introduce :course-details="courseInfo"></course-introduce>
+          </mt-tab-container-item>
+          <mt-tab-container-item id="catalogue">
+            <ul class="course_menu">
+              <li v-for="(item,index) in nodeList"
+                  :key="item.NodeID+index"
+                  :class="{'highlight':item.NodeId==activeNodeId}"
+                  @click.stop="otherNode(index, item)">
+                <span class="title">{{item.Nodename}}</span>
+                <p class="status">
+                  <span class="green" v-if="activeNodeIndex == index">正在播放</span>
+                  <span class="green" v-else-if="item.Status=='C'">已完成</span>
+                  <span v-else>未完成</span>
+                </p>
+              </li>
+            </ul>
+          </mt-tab-container-item>
+        </mt-tab-container>
+      </div>
+      <!--添加笔记-->
+      <transition name="slide-left">
+        <add-notes
+          class="notes_container container_top"
+          v-if="showAddNotes"
+          :notes-data.sync="addNotesData"
+        >
+          <!--头部-->
+          <header-fix slot="header" title="添加笔记" fixed>
+            <span slot="left" @click="toggleNotes">取消</span>
+            <span slot="right" @click="saveNotes">保存</span>
+          </header-fix>
+        </add-notes>
+      </transition>
     </div>
-    <!-- <div class="toggle_play">
-      <mt-button :type="playType == 'mp4'?'primary':'default'" size="small" @click="togglePlayer('mp4')">视频播放
-      </mt-button>
-      <mt-button :type="playType == 'mp3'?'primary':'default'" size="small" @click="togglePlayer('mp3')">音频播放
-      </mt-button>
-    </div> -->
-    <div class="error_alert" v-show="progressStack.length > 0">
-      <span>提交进度失败，请手动提交</span>
-      <mt-button class="upload_btn" type="default" size="small" @click.native="uploadProgress">提交进度</mt-button>
-    </div>
-    <div class="course_detail">
-      <mt-navbar v-model="selected">
-        <mt-tab-item id="introduce">介绍</mt-tab-item>
-        <mt-tab-item id="catalogue">目录</mt-tab-item>
-      </mt-navbar>
-      <!-- tab-container -->
-      <mt-tab-container v-model="selected">
-        <mt-tab-container-item id="introduce">
-          <course-introduce :course-details="courseInfo"></course-introduce>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="catalogue">
-          <ul class="course_menu">
-            <li v-for="(item,index) in nodeList"
-                :key="item.NodeID+index"
-                :class="{'highlight':item.NodeId==activeNodeId}"
-                @click.stop="otherNode(index, item)">
-              <span class="title">{{item.Nodename}}</span>
-              <p class="status">
-                <span class="green" v-if="activeNodeIndex == index">正在播放</span>
-                <span class="green" v-else-if="item.Status=='C'">已完成</span>
-                <span v-else>未完成</span>
-              </p>
-            </li>
-          </ul>
-        </mt-tab-container-item>
-      </mt-tab-container>
-    </div>
-    <!--添加笔记-->
-    <transition name="slide-left">
-      <add-notes
-        class="notes_container container_top"
-        v-if="showAddNotes"
-        :notes-data.sync="addNotesData"
-      >
-        <!--头部-->
-        <header-fix slot="header" title="添加笔记" fixed>
-          <span slot="left" @click="toggleNotes">取消</span>
-          <span slot="right" @click="saveNotes">保存</span>
-        </header-fix>
-      </add-notes>
-    </transition>
   </div>
 </template>
 <script>
   import {Indicator, MessageBox, Navbar, TabContainer, TabContainerItem, TabItem, Toast} from 'mint-ui';
   import Vue from 'vue';
   import {mapActions, mapState} from 'vuex';
-  import {formatDate, getMac, getStore, setStore} from '../plugins/utils';
+  import {formatDate, getMac} from '../plugins/utils';
   import {
     CheckLoginStatus,
     getSyncUserStudyData,
@@ -134,23 +127,31 @@
         timer: '', //定时器
         playType: 'mp4',
         checkTimer: '', //检查登陆的定时器
-        progressStack: []
+        height: ''
+        // progressStack: []
       };
+    },
+    computed: {
+      ...mapState(['userInfo', 'courseInfo', 'userAgent'])
     },
     created() {
       this.courseId = this.$route.query.id;
-      let store = getStore('jyaiccProgress') || {};
-      this.progressStack = store[this.courseId] || [];
+      // let store = getStore('jyaiccProgress') || {};
+      // this.progressStack = store[this.courseId] || [];
     },
     mounted() {
       /*获取video对象*/
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.myPlayer = document.getElementById('myPlayermp4');
       /*获取课程详情*/
       // document.addEventListener()
       this.GetIsAllowLearn();
-    },
-    computed: {
-      ...mapState(['userInfo', 'courseInfo'])
     },
     methods: {
       ...mapActions(['saveCourseInfo']),
@@ -238,66 +239,70 @@
           CourseNumber: this.courseId,
           data: JSON.stringify(obj)
         };
-        let store = getStore('jyaiccProgress') || {};
-        try {
-          let data = await getSyncUserStudyData(params);
-          if (data != 'ok') {
-            this.myPlayer.pause();
-            this.progressStack.push(params);
-            store[this.courseId] = this.progressStack;
-            setStore('jyaiccProgress', store);
-            MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
-              this.uploadProgress();
-            }, () => {
-              this.myPlayer.play();
-              // this.$router.push({ path: '/courseCenter' })
-            });
-          }
-        } catch (e) {
-          this.myPlayer.pause();
-          this.progressStack.push(params);
-          store[this.courseId] = this.progressStack;
-          setStore('jyaiccProgress', store);
-          MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
-            this.uploadProgress();
-          }, () => {
-            this.myPlayer.play();
-            // this.$router.push({ path: '/courseCenter' })
-          });
+        // let store = getStore('jyaiccProgress') || {};
+        let data = await getSyncUserStudyData(params);
+        if (data == 'ok') {
+          Toast({message: '课程进度提交成功', position: 'bottom'});
         }
+        // try {
+          
+          // if (data != 'ok') {
+          //   this.myPlayer.pause();
+          //   this.progressStack.push(params);
+          //   store[this.courseId] = this.progressStack;
+          //   setStore('jyaiccProgress', store);
+          //   MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
+          //     this.uploadProgress();
+          //   }, () => {
+          //     this.myPlayer.play();
+          //     // this.$router.push({ path: '/courseCenter' })
+          //   });
+          // }
+        // } catch (e) {
+          // this.myPlayer.pause();
+          // this.progressStack.push(params);
+          // store[this.courseId] = this.progressStack;
+          // setStore('jyaiccProgress', store);
+          // MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
+          //   this.uploadProgress();
+          // }, () => {
+          //   this.myPlayer.play();
+          //   // this.$router.push({ path: '/courseCenter' })
+          // });
+        // }
       },
       // 手动提交进度
-      async uploadProgress() {
-        let store = getStore('jyaiccProgress') || {};
-        if (this.progressStack && this.progressStack.length >= 0) {
-          for (let i = 0; i < this.progressStack.length; i++) {
-            let params = this.progressStack[i];
-            try {
-              let res = await getSyncUserStudyData(params);
-              if (res == 'ok') {
-                this.progressStack.splice(i, 1);
-              } else {
-                this.myPlayer.pause();
-                MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
-                  this.uploadProgress();
-                }, () => {
-                  this.myPlayer.play();
-                  // this.$router.push({ path: '/courseCenter' })
-                });
-              }
-            } catch (e) {
-              this.myPlayer.pause();
-              MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
-                this.uploadProgress();
-              }, () => {
-                this.myPlayer.play();
-                // this.$router.push({ path: '/courseCenter' })
-              });
-            }
-          }
-          store[this.courseId] = this.progressStack;
-        }
-      },
+      // async uploadProgress() {
+      //   let store = getStore('jyaiccProgress') || {};
+      //   if (this.progressStack && this.progressStack.length >= 0) {
+      //     for (let i = 0; i < this.progressStack.length; i++) {
+      //       let params = this.progressStack[i];
+      //       try {
+      //         let res = await getSyncUserStudyData(params);
+      //         if (res == 'ok') {
+      //           this.progressStack.splice(i, 1);
+      //         } else {
+      //           this.myPlayer.pause();
+      //           MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
+      //             this.uploadProgress();
+      //           }, () => {
+      //             this.myPlayer.play();
+      //             // this.$router.push({ path: '/courseCenter' })
+      //           });
+      //         }
+      //       } catch (e) {
+      //         this.myPlayer.pause();
+      //         MessageBox.confirm('进度提交失败，是否再次提交？').then(() => {
+      //           this.uploadProgress();
+      //         }, () => {
+      //           this.myPlayer.play();
+      //           // this.$router.push({ path: '/courseCenter' })
+      //         });
+      //       }
+      //     }
+      //     store[this.courseId] = this.progressStack;
+      //   }
+      // },
       /*播放方法*/
       playFunc() {
         this.myPlayer.load();
@@ -485,12 +490,18 @@
   @import "../style/mixin";
 
   .play_Jyaicc {
+    width: 100%;
+    overflow: hidden;
     .header {
       .header_title {
         flex: 6;
       }
     }
-
+    .play_jyaicc_inner{
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
     .course_menu {
       background-color: $fill-base;
       padding: 0 toRem(30px);
@@ -550,7 +561,8 @@
     .player {
       /*padding-top: 0.2rem;*/
       width: 10rem;
-      height: 5.8rem;
+      height: toRem(527px);
+      padding-top: toRem(92px);
       margin: 0 auto;
       position: relative;
       background: #000;

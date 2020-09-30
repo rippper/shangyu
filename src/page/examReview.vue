@@ -1,51 +1,53 @@
 <template>
-  <div class="exam container_both">
+  <div class="exam" :style="'height:' + height + 'px'">
     <!--头部-->
     <header-fix :title="examTitle" fixed>
       <i class="webapp webapp-back" @click.stop="goExamResult" slot="left"></i>
     </header-fix>
-    <div class="exam_content" v-for="(list,index) in exam" :key="index">
-      <transition :name="transitionName">
-        <div v-if="itemNum == index + 1">
-          <p class="exam_name">
-            <span class="red" v-if="list.ThemeType==0">【判断题】</span>
-            <span class="red" v-else-if="list.ThemeType==1">【单选题】</span>
-            <span class="red" v-else-if="list.ThemeType==2">【多选题】</span>
-            <span class="red" v-else-if="list.ThemeType==4">【简答题】</span>
-            <span class="red" v-else>【其它】</span>
-            <span class="topic_name">{{index + 1 + '.' + list.ThemeTitle}}</span>
-            <span class="red">({{Math.round(Number(list.ThemeScore))}}分)</span>
-            <br/>
-            <span>正确答案： {{list.THEME_SOLUTION}}</span>
-            <br>
-            <span>您的答案： {{list.Answer=='N'?'':list.Answer}}</span>
-          </p>
-          <div class="exam_list">
-            <div v-if="list.ThemeType == 0">
-              <mb-radio :options="judgeItem" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-radio>
-            </div>
-            <div v-else-if="list.ThemeType == 1">
-              <mb-radio :options="list.ItemString" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-radio>
-            </div>
-            <div v-else-if="list.ThemeType == 2">
-              <mb-checklist :options="list.ItemString" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-checklist>
-            </div>
-            <div v-else-if="list.ThemeType == 4">
-              <textarea class="answerInput"
-                        v-model="list.THEME_SOLUTION"
-                        rows="15"
-                        readonly
-                        placeholder="在此处出入答案内容">
-              </textarea>
+    <div class="exam_inner">
+      <div class="exam_content" v-for="(list,index) in exam" :key="index">
+        <transition :name="transitionName">
+          <div v-if="itemNum == index + 1">
+            <p class="exam_name">
+              <span class="red" v-if="list.ThemeType==0">【判断题】</span>
+              <span class="red" v-else-if="list.ThemeType==1">【单选题】</span>
+              <span class="red" v-else-if="list.ThemeType==2">【多选题】</span>
+              <span class="red" v-else-if="list.ThemeType==4">【简答题】</span>
+              <span class="red" v-else>【其它】</span>
+              <span class="topic_name">{{index + 1 + '.' + list.ThemeTitle}}</span>
+              <span class="red">({{Math.round(Number(list.ThemeScore))}}分)</span>
+              <br/>
+              <span>正确答案： {{list.THEME_SOLUTION}}</span>
+              <br>
+              <span>您的答案： {{list.Answer=='N'?'':list.Answer}}</span>
+            </p>
+            <div class="exam_list">
+              <div v-if="list.ThemeType == 0">
+                <mb-radio :options="judgeItem" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-radio>
+              </div>
+              <div v-else-if="list.ThemeType == 1">
+                <mb-radio :options="list.ItemString" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-radio>
+              </div>
+              <div v-else-if="list.ThemeType == 2">
+                <mb-checklist :options="list.ItemString" v-model="list.THEME_SOLUTION" :is-disabled="true"></mb-checklist>
+              </div>
+              <div v-else-if="list.ThemeType == 4">
+                <textarea class="answerInput"
+                          v-model="list.THEME_SOLUTION"
+                          rows="15"
+                          readonly
+                          placeholder="在此处出入答案内容">
+                </textarea>
+              </div>
             </div>
           </div>
-        </div>
-      </transition>
+        </transition>
+      </div>
     </div>
     <div class="exam_footer">
       <mt-button v-if="itemNum>1" class="prev" type="primary" plain @click.native='preItem'>上一题</mt-button>
       <div v-else style="width: 2rem;margin-left: 0.4rem">&nbsp;</div>
-      <span class="itemNum"><span>试题</span> （{{itemNum}}/{{allItem}}）</span>
+      <span class="er_itemNum"><span>试题</span> （{{itemNum}}/{{allItem}}）</span>
       <mt-button v-if="itemNum<allItem" type="primary" class="next" @click.native="nextItem">下一题</mt-button>
       <mt-button v-else type="primary" class="next" @click.native="goExamResult">返回</mt-button>
     </div>
@@ -81,7 +83,8 @@
         ], //单选item
         itemNum: 1,//第几题
         allItem: 0,
-        startDate: ''//考试开始时间
+        startDate: '',//考试开始时间
+        height: ''
       };
     },
     created() {
@@ -89,11 +92,18 @@
       this.examPaperId = this.$route.query.examPaperId;
     },
     mounted() {
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.getExamWrongTheme();
     },
     props: [],
     computed: {
-      ...mapState(['userInfo'])
+      ...mapState(['userInfo', 'userAgent', 'appType'])
     },
     methods: {
       agreeToExam() {
@@ -154,7 +164,15 @@
     background: url(../assets/exam-bg.png) no-repeat center;
     background-size: 100% 99vh;
     font-size: 15px;
-
+    overflow: hidden;
+    position: relative;
+    .exam_inner{
+      width: 100%;
+      height: 100%;
+      padding: toRem(92px) 0 toRem(110px);
+      overflow-y: auto;
+      position: relative;
+    }
     .exam_header {
       padding: 0 toRem(30px);
       border-bottom: 1px solid $border-color-base;
@@ -198,14 +216,14 @@
 
     .exam_footer {
       height: toRem(110px);
-      position: fixed;
+      position: absolute;
       width: 100%;
       bottom: 0;
       text-align: center;
       left: 0;
       display: flex;
       align-items: center;
-      background: #fff;
+      background: rgba(255,255,255,0.8);
       /*line-height: 73px;*/
       @include flex();
 
@@ -218,7 +236,7 @@
         margin-left: toRem(30px);
       }
 
-      .itemNum {
+      .er_itemNum {
         line-height: toRem(73px);
 
         span {

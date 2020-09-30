@@ -5,12 +5,10 @@ import {
   GET_USERAGENT,
   SAVE_COURSEINFO,
   SAVE_USERINFO,
+  SET_APPTYPE
 } from './mutation-types.js';
 
 export default {
-  async getUserInformation({state, commit}, payload) {
-  
-  },
   saveUserInfo({state, commit}, payload) {
     setStore('userInfo', payload);
     commit(SAVE_USERINFO, payload);
@@ -26,4 +24,8 @@ export default {
   saveAlertTimes({state, commit}, payload) {
     commit(ALERT_TIMES, payload);
   },
+  saveAppType({state, commit}, type) {
+    setStore('apptype', type);
+    commit(SET_APPTYPE, type)
+  }
 };

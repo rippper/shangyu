@@ -39,7 +39,7 @@
     color: #fff;
     padding: 0 toRem(20px);
     &.is-fixed {
-      position: fixed;
+      position: absolute;
       z-index: 1;
       top: 0;
       left: 0;

@@ -92,6 +92,9 @@ router.afterEach((to, from) => {
   /*判断mobile weixin*/
   let agent = userAgent();
   setStore('userAgent', agent);
+  if (store.state.userAgent == '') {
+    store.commit('GET_USERAGENT', agent)
+  }
 });
 // if (process.env.NODE_ENV == 'development') {
   new Vue({

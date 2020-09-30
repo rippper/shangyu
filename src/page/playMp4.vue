@@ -20,17 +20,17 @@
         x5-playsinline="true"
         x-webkit-airplay="true"
       ></video>
-      <audio v-if="playType == 'mp3'" id="myPlayer" :src="courseInfo.ONLINE_URL" controls></audio>
+      <!-- <audio v-if="playType == 'mp3'" id="myPlayer" :src="courseInfo.ONLINE_URL" controls></audio> -->
       <!--<video v-else id="myVideo" preload="meta" :src="courseDetails.OnlineUrl" controls></video>-->
     </div>
-    <div class="toggle_play">
+    <!-- <div class="toggle_play">
       <mt-button :type="playType == 'mp4'?'primary':'default'" size="small" @click="togglePlayer('mp4')">播放MP4</mt-button>
       <mt-button :type="playType == 'mp3'?'primary':'default'" size="small" @click="togglePlayer('mp3')">播放MP3</mt-button>
-    </div>
-    <div class="error_alert" v-show="progressStack.length > 0">
+    </div> -->
+    <!-- <div class="error_alert" v-show="progressStack.length > 0">
       <span>提交进度失败，请手动提交</span>
       <mt-button class="upload_btn" type="default" size="small" @click.native="uploadProgress">提交进度</mt-button>
-    </div>
+    </div> -->
     <div class="course_detail">
       <mt-navbar v-model="selected">
         <mt-tab-item id="introduce">介绍</mt-tab-item>
@@ -101,7 +101,7 @@ import {
 import Vue from "vue";
 import { mapActions, mapMutations, mapState } from "vuex";
 import wx from "weixin-js-sdk";
-import { getMac, getStore, setStore, timeFormat } from "../plugins/utils";
+import { getMac, getStore, timeFormat } from "../plugins/utils";
 import {
   AddExperience,
   Auth,
@@ -308,44 +308,44 @@ export default {
         TotalTime: duration
       };
       console.log(params)
-      let store = getStore("singleProgress") || {};
-      try {
+      // let store = getStore("singleProgress") || {};
+      // try {
         let data = await singleUploadTimeNode(params);
-        console.log(params)
         // let res = data.split(",");
-        if (data.result) {
-        } else {
-          this.myPlayer.pause();
-          this.progressStack.push(params);
-          console.log(params);
-          console.log(this.progressStack);
-          store[this.courseId] = this.progressStack;
-          setStore("singleProgress", store);
-          MessageBox.confirm("进度提交失败，是否再次提交？").then(
-            () => {
-              this.uploadProgress();
-            },
-            () => {
-              this.myPlayer.play();
-              // this.$router.push({ path: '/courseCenter' })
-            }
-          );
+        if (data.split(',')[0] == 'true') {
         }
-      } catch (e) {
-        this.myPlayer.pause();
-        this.progressStack.push(params);
-        store[this.courseId] = this.progressStack;
-        setStore("singleProgress", store);
-        MessageBox.confirm("进度提交失败，是否再次提交？").then(
-          () => {
-            this.uploadProgress();
-          },
-          () => {
-            this.myPlayer.play();
-            // this.$router.push({ path: '/courseCenter' })
-          }
-        );
-      }
+        // } else {
+        //   this.myPlayer.pause();
+        //   this.progressStack.push(params);
+        //   console.log(params);
+        //   console.log(this.progressStack);
+        //   store[this.courseId] = this.progressStack;
+        //   setStore("singleProgress", store);
+          // MessageBox.confirm("进度提交失败，是否再次提交？").then(
+          //   () => {
+          //     this.uploadProgress();
+          //   },
+          //   () => {
+          //     this.myPlayer.play();
+          //     // this.$router.push({ path: '/courseCenter' })
+          //   }
+          // );
+        // }
+      // } catch (e) {
+      //   this.myPlayer.pause();
+      //   this.progressStack.push(params);
+      //   store[this.courseId] = this.progressStack;
+      //   setStore("singleProgress", store);
+      //   MessageBox.confirm("进度提交失败，是否再次提交？").then(
+      //     () => {
+      //       this.uploadProgress();
+      //     },
+      //     () => {
+      //       this.myPlayer.play();
+      //       // this.$router.push({ path: '/courseCenter' })
+      //     }
+      //   );
+      // }
     },
     // 手动提交进度
     async uploadProgress() {

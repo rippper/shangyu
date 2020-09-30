@@ -56,6 +56,8 @@
           this.$router.push({ path: '/onlineexam', query: { type: '1' } })
         } else if (this.backType == '3') {
           this.$router.push({ path: '/examSearch', query: { keyword: this.keyword, linkType: 1 } })
+        } else if (this.backType == '4') {
+          this.$router.push({ path: '/examSearch', query: { linkType: 3, examType: 1, keyword: this.keyword } })
         } else {
           this.$router.push({ path: '/examCenter' })
         }
@@ -66,11 +68,9 @@
 
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../style/mixin";
-
   .container_both {
     background: #fff;
   }
-
   .race-list {
     li {
       font-size: 14px;
@@ -106,7 +106,6 @@
       }
     }
   }
-
   .no-data {
     line-height: toRem(60px);
     text-align: center;

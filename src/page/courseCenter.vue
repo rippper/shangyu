@@ -2,7 +2,7 @@
 * 课程中心
 */
 <template>
-  <div class="courseCenter container_top">
+  <div class="courseCenter" :style="'height:' + height + 'px'">
     <header-fix :title="courseTitle" fixed>
       <div slot="left">
         <i class="webapp webapp-back" @click.stop="goBack"></i>
@@ -12,34 +12,34 @@
       </div>
       <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link>
     </header-fix>
-    <nav-slide :show="showSlide" @showChange="showChange">
-      <div slot="left" class="category">
-        <tree :data="courseCategory" :on-select="searchCourse" :selected-id="channelId"></tree>
-      </div>
-      <div slot="right">
-        <section v-if="!skeInit" v-infinite-scroll="getCourseList"
-                 infinite-scroll-immediate-check="immediate"
-                 infinite-scroll-disabled="loading"
-                 infinite-scroll-distance="10">
-          <course-list :course-data="courseData" :no-data-bg="noDataBg" :no-data="noData"/>
-        </section>
-        <skeleton-item v-else v-for="i in 10" :key="i"/>
-      </div>
-    </nav-slide>
+    <div class="cc_listcontent">
+      <nav-slide :show="showSlide" @showChange="showChange">
+        <div slot="left" class="category">
+          <tree :data="courseCategory" :on-select="searchCourse" :selected-id="channelId"></tree>
+        </div>
+        <div slot="right">
+          <section v-if="!skeInit" v-infinite-scroll="getCourseList"
+                  infinite-scroll-immediate-check="immediate"
+                  infinite-scroll-disabled="loading"
+                  infinite-scroll-distance="10">
+            <course-list :course-data="courseData" :no-data-bg="noDataBg" :no-data="noData"/>
+          </section>
+          <skeleton-item v-else v-for="i in 10" :key="i"/>
+        </div>
+      </nav-slide>
+    </div>
   </div>
 </template>
 <script>
   import Vue from 'vue'
   import { mapState } from 'vuex'
-  import { Indicator, InfiniteScroll, MessageBox, Toast } from 'mint-ui'
+  import { Indicator, InfiniteScroll, MessageBox } from 'mint-ui'
   import {
     getChannelInfoList,
-    getCourseInfoList,
-    getSyncUserStudyData,
-    // singleUploadTimeNode
+    getCourseInfoList
   } from '../service/getData'
   import { goBack } from '../service/mixins'
-  import { getStore, setStore } from "../plugins/utils";
+  import { setStore } from "../plugins/utils";
   import { bottomBar } from '../components'
 
   Vue.use(InfiniteScroll)
@@ -58,13 +58,21 @@
         page: 1,
         noData: false,
         noDataBg: false,
-        skeInit: true
+        skeInit: true,
+        height: ''
       }
     },
     computed: {
-      ...mapState(['userInfo'])
+      ...mapState(['userInfo', 'userAgent', 'appType'])
     },
-    created() {
+    mounted () {
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.channelId = this.$route.query.id || ''
       this.courseTitle = this.$route.query.title || '课程中心'
       this.getChannelInfoList()
@@ -150,36 +158,37 @@
         this.getCourseList()
       },
       // 上传缓存的进度
-      async uploadProgress() {
+      uploadProgress() {
+        setStore('jyaiccProgress', '')
         // let singleStore = getStore('singleProgress') || {}
         // let singleLen = Object.keys(singleStore).length
-        let aiccStore = getStore('jyaiccProgress') || {}
-        let aiccLen = Object.keys(aiccStore).length
-        if (aiccLen > 0) {
-          for (let key in aiccStore) {
-            let progressStack = aiccStore[key];
-            for (let i = 0; i < progressStack.length; i++) {
-              let params = progressStack[i]
-              console.log(params)
-              try {
-                let data = await getSyncUserStudyData(params)
-                if (data == 'ok') {
-                  progressStack.splice(i, 1)
-                } else {
-                  Toast({ message: "提交缓存进度失败", position: 'bottom' })
-                }
-              } catch (e) {
-                Toast({ message: "提交缓存进度失败", position: 'bottom' })
-              }
-            }
-            if (progressStack.length == 0) {
-              delete aiccStore[key]
-            } else {
-              aiccStore[key] = progressStack;
-            }
-          }
-          setStore('jyaiccProgress', aiccStore)
-        }
+        // let aiccStore = getStore('jyaiccProgress') || {}
+        // let aiccLen = Object.keys(aiccStore).length
+        // if (aiccLen > 0) {
+        //   for (let key in aiccStore) {
+        //     let progressStack = aiccStore[key];
+        //     for (let i = 0; i < progressStack.length; i++) {
+        //       let params = progressStack[i]
+        //       console.log(params)
+        //       try {
+        //         let data = await getSyncUserStudyData(params)
+        //         if (data == 'ok') {
+        //           progressStack.splice(i, 1)
+        //         } else {
+        //           Toast({ message: "提交缓存进度失败", position: 'bottom' })
+        //         }
+        //       } catch (e) {
+        //         Toast({ message: "提交缓存进度失败", position: 'bottom' })
+        //       }
+        //     }
+        //     if (progressStack.length == 0) {
+        //       delete aiccStore[key]
+        //     } else {
+        //       aiccStore[key] = progressStack;
+        //     }
+        //   }
+        //   setStore('jyaiccProgress', aiccStore)
+        // }
         // if (singleLen > 0) {
         //   for (let key in singleStore) {
         //     let progressStack = singleStore[key]
@@ -222,6 +231,12 @@
 
   .courseCenter {
     width: 100vw;
-    height: 100vh;
+    overflow: hidden;
+    .cc_listcontent{
+      width: 100%;
+      height: 100%;
+      padding-top: toRem(92px);
+      overflow-y: auto;
+    }
   }
 </style>

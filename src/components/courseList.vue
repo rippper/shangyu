@@ -34,9 +34,6 @@
     computed: {
       ...mapState(['userInfo'])
     },
-    created() {
-      console.log(this.userInfo)
-    },
     props: {
       courseData: Array,
       noDataBg: {
@@ -57,12 +54,10 @@
       ...mapActions(['saveCourseInfo']),
       playCourse(item) {
         this.saveCourseInfo(item)
-        console.log(item)
         this.toPlay(item.CourseType, item.Course_Number)
       },
      
       async addCourse(item) {
-        console.log(item)
         let res = { result: '1' }
         if (item.IsSelect != '1') {
           res = await UpdateUserCourse({ UserID: this.userInfo.UserId, CourseNumber: item.Course_Number || item.CourseNumber })
@@ -77,6 +72,4 @@
 
 <style lang="scss" rel="stylesheet/scss">
   @import "../style/mixin";
-  .course_list {
-  }
 </style>

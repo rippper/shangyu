@@ -7,25 +7,29 @@
             </div>
         </div>
         <div class="iil_list">
-            <div class="iil_list_inner">
-                <ul ref="illList">
-                    <li v-for="(item, index) in specialStudy" :key="index" @click="linkTo(item)">
-                        <div>
-                            <img :src="item.Course_img ? item.Course_img : require('../assets/sy_nopic.png') " alt>
+            <mt-swipe :auto="3000">
+                <mt-swipe-item v-for="(item, index) in specialStudy" :key="index">
+                    <div class="iil_l_inner">
+                        <div class="ill_l_inner_imgbox">
+                            <img :src="item.Course_img ? item.Course_img : require('../assets/sy_nopic.png') " alt @click="linkTo(item)">
                         </div>
-                        <p class="ill_title" v-text="item.Course_Name"></p>
-                        <p class="ill_watcherperson" v-if="item.Watcher">浏览量: <span v-text="item.ClickCount"></span></p>
-                    </li>
-                </ul>
-            </div>
+                        <p v-text="item.Course_Name"></p>
+                    </div>
+                </mt-swipe-item>
+            </mt-swipe>
         </div>
     </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import { UpdateUserCourse } from '../service/getData'
 import { mapActions, mapState } from 'vuex'
 import { toPlay } from '../service/mixins'
+import { Swipe, SwipeItem } from 'mint-ui'
+
+Vue.component(Swipe.name, Swipe)
+Vue.component(SwipeItem.name, SwipeItem)
 
 export default {
     mixins: [toPlay],
@@ -35,14 +39,8 @@ export default {
         specialStudy: Array,
         linkPath: Object
     },
-    mounted () {
-        this.culWidth()
-    },
     methods: {
         ...mapActions(['saveCourseInfo']),
-        culWidth () {
-            this.$refs.illList.style.width = (this.specialStudy.length * 320 + (this.specialStudy.length - 1) * 20 + 58) / 75 + 'rem'
-        },
         linkTo (item) {
             if (item.Watcher) {
                 this.addCourse(item)
@@ -93,36 +91,37 @@ export default {
         }
     }
     .iil_list{
-        width: 100%;
-        height: toRem(365px);
+        width: toRem(690px);
+        height: toRem(460px);
+        margin: 0 auto;
         overflow: hidden;
-    }
-    .iil_list_inner{
-        width: 100%;
-        height: toRem(390px);
-        overflow: auto;
-        ul{
-            padding: toRem(15px) toRem(29px) 0;
-            display: flex;
-            justify-content: space-between;
-            li{
+        .mint-swipe{
+            height: toRem(460px);
+            .mint-swipe-item{
+                .iil_l_inner{
+                    width: toRem(690px);
+                    height: toRem(460px);
+                    position: relative;
+                }
+                .ill_l_inner_imgbox{
+                    width: 100%;
+                    height:toRem(380px);
+                }
                 img{
-                    width: toRem(320px);
-                    height: toRem(212px);
+                    width: 100%;
+                    height:toRem(380px);
                     border-radius: toRem(15px);
                 }
-                .ill_title{
-                    width: toRem(320px);
+                p{
                     height: toRem(80px);
                     line-height: toRem(80px);
-                    font-weight: bolder;
-                    font-size: 0.45rem;
-                    @include ellipsis_two(1);
+                    font-size: 0.4rem;
+                    font-weight: bold;
                 }
-                .ill_watcherperson{
-                    font-size: 0.35rem;
-                    color: #ababab;
-                }
+            }
+            .mint-swipe-indicators{
+                // position: relative;
+                bottom: toRem(90px);
             }
         }
     }

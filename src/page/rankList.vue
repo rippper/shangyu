@@ -2,41 +2,27 @@
 * 排行傍
 */
 <template>
-  <div class="rankList container_top">
+  <div class="rankList" :style="'height:' + height + 'px'">
     <!--头部-->
     <header-fix title="排行榜" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
-      <i class="webapp webapp-category" slot="right" @click="toggleNav"></i>
     </header-fix>
-    <nav-slide :show="showSlide" @showChange="showChange">
-      <div class="rl_leftpart" slot="left">
-        <ul>
-          <li>2015</li>
-          <li>2016</li>
-          <li>2017</li>
-          <li>2018</li>
-          <li>2019</li>
-          <li>2020</li>
-        </ul>
-      </div>
-      <div slot="right" class="category">
-        <mt-navbar v-model="selected">
-          <mt-tab-item id="1">学习排名</mt-tab-item>
-          <mt-tab-item id="2">课程排名</mt-tab-item>
-          <mt-tab-item id="3">单位排名</mt-tab-item>
-        </mt-navbar>
-
-        <!-- tab-container -->
-        <mt-tab-container v-model="selected">
-          <mt-tab-container-item id="1">
+    <div class="rankList_inner">
+      <mt-navbar v-model="selected">
+        <mt-tab-item id="1">学习排名</mt-tab-item>
+        <mt-tab-item id="2">课程排名</mt-tab-item>
+        <mt-tab-item id="3">单位排名</mt-tab-item>
+      </mt-navbar>
+      <!-- tab-container -->
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item id="1">
+          <div class="listitem_formtitle">
+            <div class="listitem_formtitle_item">排名</div>
+            <div class="listitem_formtitle_item">学员</div>
+            <div class="listitem_formtitle_item">学分</div>
+          </div>
+          <div class="listitem_form">
             <table class="table">
-              <thead class="fixed_rank_title">
-              <tr>
-                <th class="rank">排名</th>
-                <th class="student">学员</th>
-                <th class="credit">学分</th>
-              </tr>
-              </thead>
               <tbody class="fixed_rank_content">
               <tr v-for="(item,index) in studentData" :key="item.index">
                 <td v-if="index<3" class="rank"
@@ -47,17 +33,17 @@
               </tr>
               </tbody>
             </table>
-            <div class="noDataBg" v-if="noDataBg1"></div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="2">
+          </div>
+          <div class="noDataBg" v-if="noDataBg1"></div>
+        </mt-tab-container-item>
+        <mt-tab-container-item id="2">
+          <div class="listitem_formtitle">
+            <div class="listitem_formtitle_item">排名</div>
+            <div class="listitem_formtitle_item">课程</div>
+            <div class="listitem_formtitle_item">播放次数</div>
+          </div>
+          <div class="listitem_form">
             <table class="table">
-              <thead class="fixed_rank_title">
-              <tr>
-                <th class="rank">排名</th>
-                <th class="student">课程</th>
-                <th class="credit">播放次数</th>
-              </tr>
-              </thead>
               <tbody class="fixed_rank_content">
               <tr v-for="(item,index) in courseData" :key="item.index">
                 <td v-if="index<3" class="rank"
@@ -68,17 +54,17 @@
               </tr>
               </tbody>
             </table>
-            <div class="noDataBg" v-if="noDataBg2"></div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="3">
+          </div>
+          <div class="noDataBg" v-if="noDataBg2"></div>
+        </mt-tab-container-item>
+        <mt-tab-container-item id="3">
+          <div class="listitem_formtitle">
+            <div class="listitem_formtitle_item">排名</div>
+            <div class="listitem_formtitle_item">单位</div>
+            <div class="listitem_formtitle_item">学分</div>
+          </div>
+          <div class="listitem_form">
             <table class="table">
-              <thead class="fixed_rank_title">
-              <tr>
-                <th class="rank">排名</th>
-                <th class="student">单位</th>
-                <th class="credit">学分</th>
-              </tr>
-              </thead>
               <tbody class="fixed_rank_content">
               <tr v-for="(item,index) in groupData" :key="item.index">
                 <td v-if="index<3" class="rank"
@@ -89,11 +75,11 @@
               </tr>
               </tbody>
             </table>
-            <div class="noDataBg" v-if="noDataBg3"></div>
-          </mt-tab-container-item>
-        </mt-tab-container>
-      </div>
-    </nav-slide>
+          </div>
+          <div class="noDataBg" v-if="noDataBg3"></div>
+        </mt-tab-container-item>
+      </mt-tab-container>
+    </div>
   </div>
 </template>
 <script>
@@ -101,6 +87,7 @@
   import { Navbar, TabItem, TabContainer, TabContainerItem } from 'mint-ui'
   import { goBack } from '../service/mixins'
   import { GetRankInfoList } from '../service/getData'
+  import { mapState } from 'vuex'
 
   Vue.component(Navbar.name, Navbar)
   Vue.component(TabItem.name, TabItem)
@@ -118,9 +105,20 @@
         noDataBg2: false,
         noDataBg3: false,
         showSlide: false,
+        height: ''
       }
     },
+    computed: {
+      ...mapState(['userAgent', 'appType'])
+    },
     mounted () {
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       this.getRankList('1')
       this.getRankList('2')
       this.getRankList('3')
@@ -138,7 +136,6 @@
         // if (data.Type == 1) {
           if (RankType == '1') {
             this.studentData = data.RankInfoList;
-            console.log(this.studentData);
             if (data.RankInfoList.length == 0) {
               this.noDataBg1 = true
             }
@@ -163,34 +160,67 @@
   @import "../style/mixin";
 
   .rankList {
-    padding-top: toRem(92px);
+    padding-top: toRem(180px);
     width: 100vw;
-    height: 100vh;
-    .category{
-      position: relative;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+    .rankList_inner{
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .mint-tab-container{
+      height: 100%;
+      .mint-tab-container-wrap{
+        height: 100%;
+      }
     }
     .mint-navbar {
       position: absolute;
-      top: 0;
+      top: toRem(92px);
       left: 0;
       width: 100%;
       z-index: 10;
     }
-
-    .fixed_rank_title {
-      position: fixed;
-      top: toRem(90px);
-      left: 0;
+    .table{
       width: 100%;
-      background-color: $brand-primary;
-      z-index: 10;
+      height: 100%;
+    }
+    .fixed_rank_title {
+      width: 100%;
+      
+      position: absolute;
+      top: toRem(-2px);
+      z-index: 99;
     }
     .fixed_rank_content{
-      position: fixed;
-      top: toRem(168px);
-      left: 0;
       width: 100%;
       z-index: 10;
+    }
+    .listitem_formtitle{
+      width: 100%;
+      height: toRem(75px);
+      display: flex;
+      position: absolute;
+      top: toRem(-1px);
+      z-index: 100;
+      .listitem_formtitle_item{
+        flex: 1;
+        height: toRem(75px);
+        line-height: toRem(75px);
+        text-align: center;
+        color: #fff;
+        background-color: $brand-primary;
+      }
+    }
+    .listitem_form{
+      width: 100%;
+      height: 100%;
+      padding-top: toRem(75px);
+      overflow: auto;
+      position: relative;
+      
     }
     .table {
       width: 100%;

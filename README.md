@@ -7,6 +7,11 @@
 
 vue2 + vuex + vue-router + mintui + webpack + ES6/7 + axios + sass + flex + iconfont
 
+测试账号：jygly
+测试密码：GxvHa%x#0u1c4qx3
+这个项目ios端不兼容position: fixed 所以页面用的position: absolute
+
+
 ## 项目运行
 
 ``` bash
@@ -14,7 +19,7 @@ vue2 + vuex + vue-router + mintui + webpack + ES6/7 + axios + sass + flex + icon
 npm install
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm start
 
 # build for production with minification
 npm run build

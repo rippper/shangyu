@@ -723,12 +723,26 @@ export const GetIsAllowExam = (data) => fetch.post(Api.GetIsAllowExam.url, {
   ...data
 });
 /**
+ * 根据年份获取用户信息
+ */
+export const getUserScoreByYear = (data) => fetch.post(Api.getUserScoreByYear.url, {
+  ...Api.getUserScoreByYear.data,
+  ...data
+})
+/**
  * 获取测试历史记录
  */
 export const GetUserExamHistory = (data) => fetch.post(Api.GetUserExamHistory.url, {
   ...Api.GetUserExamHistory.data,
   ...data
 });
+/**
+ * 单点登录验证信息
+ */
+export const ValidateAutoLogin = (data) => fetch.post(Api.ValidateAutoLogin.url, {
+  ...Api.ValidateAutoLogin.data,
+  ...data
+})
 export const GetIsAllowLearn = (data) => fetch.post(Api.GetIsAllowLearn.url, {
   ...Api.GetIsAllowLearn.data,
   ...data

@@ -91,6 +91,7 @@ const OnlineExam = r => require.ensure([], () => r(require('../page/onlineExam.v
 const MyFinishCourse = r => require.ensure([], () => r(require('../page/myFinishCourse.vue')), 'myFinishCourse')
 const MyCollect = r => require.ensure([],
   () => r(require('../page/myCollect.vue')), 'myCollect');
+const HistoryYearScore = r => require.ensure([], () => r(require('../page/historyYearScore.vue')), 'historyYearScore')
 const LearningPortfolio = r => require.ensure([],
   () => r(require('../page/learningPortfolio.vue')), 'learningPortfolio');
 const ExamHistory = r => require.ensure([],
@@ -125,6 +126,7 @@ const SpecialTask = r => require.ensure([],
   () => r(require('../page/specialTask.vue')), 'specialTask');
 const CommunityCenter = r => require.ensure([],
   () => r(require('../page/communityCenter.vue')), 'communityCenter');
+const CostomTraining = r => require.ensure([], () => r(require('../page/costomTraining.vue')), 'costomTraining');
 const routes = [{
     path: '/',
     component: App,
@@ -151,15 +153,6 @@ const routes = [{
         component: Login,
         meta: {
           title: '登录'
-        },
-      },
-      //首页
-      {
-        name: 'home',
-        path: '/home',
-        component: Home,
-        meta: {
-          title: '首页'
         },
       },
       {
@@ -202,7 +195,7 @@ const routes = [{
         path: '/examCenter',
         component: ExamCenter,
         meta: {
-          title: '考试列表'
+          title: '未完成的考试'
         },
       },
       //考试
@@ -239,7 +232,16 @@ const routes = [{
         component: PersonalCenter,
         meta: {
           title: '个人中心'
-        },
+        }
+      },
+      // 历年学时数据查询
+      {
+        name: 'historyYearScore',
+        path: '/HistoryYearScore',
+        component: HistoryYearScore,
+        meta: {
+          title: '学时记录'
+        }
       },
       //消息中心
       {
@@ -274,7 +276,7 @@ const routes = [{
         path: '/myCourse',
         component: MyCourse,
         meta: {
-          title: '我的课程'
+          title: '正在学习的课程'
         },
       },
       //我的考试
@@ -688,6 +690,15 @@ const routes = [{
         component: CommunityCenter,
         meta: {
           title: '资讯中心'
+        }
+      },
+      // 定制培训
+      {
+        name: 'costomTraining',
+        path: '/costomTraining',
+        component: CostomTraining,
+        meta: {
+          title: '定制培训'
         }
       },
       //error

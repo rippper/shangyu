@@ -32,6 +32,7 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'getCourseInfoListAll',
+      index: 0 // 是否为首页调 1：是； 0: 否
       // selecttype: 1,
       // channelId: '',
       // UserID: '',
@@ -182,6 +183,7 @@ export const Api2 = {
       Page: 1,
       PageCount: 10,
       UserID: '',
+      coursename: '', // 课程名称
       CourseNumber: '',
       Finish: ''
     }
@@ -511,6 +513,20 @@ export const Api2 = {
     url: API_URL,
     data: {
       method: 'getArticleTopList'
+    }
+  },
+  // 根据年份获取用户学时信息
+  getUserScoreByYear: {
+    url: API_URL,
+    data: {
+      method: 'getUserScoreByYear'
+    }
+  },
+  // 单点登录验证信息
+  ValidateAutoLogin: {
+    url: API_URL,
+    data: {
+      method: 'ValidateAutoLogin'
     }
   }
 

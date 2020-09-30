@@ -4,7 +4,7 @@
 <template>
   <div class="article_container">
     <!--头部-->
-    <header-fix title="文章详情" fixed>
+    <header-fix :title="label" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
       <!--<span slot="right" class="read_count">{{articleDetails.ClickCount}}阅读</span>-->
     </header-fix>
@@ -80,6 +80,7 @@ export default {
   mixins: [goBack],
   data() {
     return {
+      label: this.$route.query.type || '文章详情',
       articleId: "",
       iframeSrc: "",
       articleDetails: {

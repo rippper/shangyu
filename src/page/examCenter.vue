@@ -2,12 +2,11 @@
 * 在线测试
 */
 <template>
-  <div class="examCenter container_top">
+  <div class="examCenter" :style="'height:' + height + 'px'">
     <header-fix :title="examTitle" fixed>
       <!--<a slot="left" @click="toggleNav">
         <i class="webapp webapp-category"></i>
       </a>-->
-      <i class="webapp webapp-back" @click.stop="goGuide" slot="left"></i>
       <router-link slot="right" :to="{ path: '/examSearch', query: { linkType: 2 } }"><i class="webapp webapp-search"></i></router-link> 
         <!-- <router-link class="pull-right" to="/examSearch">
           <i class="webapp webapp-search"></i>
@@ -19,80 +18,19 @@
         </a>-->
     </header-fix>
     <div class="container">
-      <!--<mt-navbar v-model="tabIndex">-->
-        <!--<mt-tab-item id="1">未及格</mt-tab-item>-->
-        <!--<mt-tab-item id="2">已及格</mt-tab-item>-->
-      <!--</mt-navbar>-->
-      <mt-tab-container v-model="tabIndex" :swipeable="true">
-        <mt-tab-container-item id="1">
-          <section v-infinite-scroll="getUnFinishExamList"
-                   infinite-scroll-immediate-check="immediate"
-                   infinite-scroll-disabled="loading"
-                   infinite-scroll-distance="10">
-            <exam-list :exam-data="unFinishExamData"
-                       :no-data-bg="unFinishNoDataBg"
-                       :no-data="unFinishNoData"
-                       @refreshExamList="refreshExamList">
-            </exam-list>
-          </section>
-        </mt-tab-container-item>
-        <!--<mt-tab-container-item id="2">-->
-          <!--<section v-infinite-scroll="getFinishExamList"-->
-                   <!--infinite-scroll-immediate-check="immediate"-->
-                   <!--infinite-scroll-disabled="loading"-->
-                   <!--infinite-scroll-distance="10">-->
-            <!--<exam-list :exam-data="finishExamData"-->
-                       <!--:no-data-bg="finishNoDataBg"-->
-                       <!--:no-data="finishNoData">-->
-            <!--</exam-list>-->
-          <!--</section>-->
-        <!--</mt-tab-container-item>-->
-      </mt-tab-container>
+      <div  class="container_inner"
+            v-infinite-scroll="getUnFinishExamList"
+            infinite-scroll-immediate-check="immediate"
+            infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10">
+        <exam-list :exam-data="unFinishExamData"
+                    :no-data-bg="unFinishNoDataBg"
+                    :no-data="unFinishNoData"
+                    @refreshExamList="refreshExamList">
+        </exam-list>
+      </div>
     </div>
-    <!--<nav-slide :show="showSlide" @showChange="showChange">
-      <div slot="left" class="category">
-        <tree :data="examCategory"
-              :on-select="searchExam"
-              :selected-id="typeId"
-        >
-        </tree>
-      </div>
-      <div slot="right">
-        <section v-infinite-scroll="getExamList"
-                 infinite-scroll-immediate-check="immediate"
-                 infinite-scroll-disabled="loading"
-                 infinite-scroll-distance="10">
-          <exam-list :exam-data="examData"
-                     :no-data-bg="noDataBg"
-                     :no-data="noData">
-          </exam-list>
-        </section>
-      </div>
-    </nav-slide>
-    <div class="filter_layer" v-if="showFilter" @click="toggleFilter"></div>
-    <div class="filter_list" :class="{'show':showFilter}">
-      <p class="filter_item filter_title"><span>筛选条件</span></p>
-      <p class="filter_item" :class="examType=='All'&&'active'" @click="filterExam('All')">
-        <i class="webapp webapp-order" style="color: #00aeff;"></i>
-        <span>默认</span>
-        <i v-if="examType=='All'" class="webapp webapp-selected"></i>
-      </p>
-      <p class="filter_item" :class="examType=='Finish'&&'active'" @click="filterExam('Finish')">
-        <i class="webapp webapp-smile" style="color: #5fbe81;"></i>
-        <span>已过</span>
-        <i v-if="examType=='Finish'" class="webapp webapp-selected"></i>
-      </p>
-      <p class="filter_item" :class="examType=='UnFinish'&&'active'" @click="filterExam('UnFinish')">
-        <i class="webapp webapp-cry" style="color: #ee3f3f;"></i>
-        <span>未过</span>
-        <i v-if="examType=='UnFinish'" class="webapp webapp-selected"></i>
-      </p>
-      <p class="filter_item" :class="examType=='UnJoin'&&'active'" @click="filterExam('UnJoin')">
-        <i class="webapp webapp-cry" style="color: #999999;"></i>
-        <span>未考</span>
-        <i v-if="examType=='UnJoin'" class="webapp webapp-selected"></i>
-      </p>
-    </div>-->
+    <bottomBar selected="3"></bottomBar>
   </div>
 </template>
 <script>
@@ -108,7 +46,7 @@
   export default {
     data () {
       return {
-        examTitle: '考试列表',
+        examTitle: '未完成的考试',
         tabIndex: "1",
         /*showFilter: false, //是否显示筛选
         showSlide: false, //是否显示滑动
@@ -119,18 +57,26 @@
         unFinishExamData: [], //考试列表数据
         loading: false,
         immediate: false,
-        unFinishPage: 0,
-        finishPage: 0,
+        unFinishPage: 1,
+        finishPage: 1,
         unFinishNoData: false,
         finishNoData: false,
         unFinishNoDataBg: false,
         finishNoDataBg: false,
+        height: ''
       }
     },
     computed: {
-      ...mapState(['userInfo'])
+      ...mapState(['userInfo', 'userAgent', 'appType'])
     },
     mounted () {
+      if (this.userAgent.android) {
+        this.height = window.innerHeight
+      } else if (this.userAgent.ios && this.appType == 'app') {
+          this.height = window.innerHeight - 46
+      } else if (this.userAgent.ios && this.appType != 'app') {
+          this.height = window.innerHeight
+      }
       /*this.getExamCategory()*/
       // this.getFinishExamList()
       this.getUnFinishExamList()
@@ -183,9 +129,6 @@
         this.loading = false
         this.finishPage += 1
       },*/
-      goGuide () {
-        this.$router.push({ path: '/examGuide' })
-      },
       async getUnFinishExamList () {
         this.unFinishNoData = false
         this.unFinishNoDataBg = false
@@ -242,7 +185,15 @@
 
   .examCenter {
     width: 100vw;
-    height: 100vh;
+    position: relative;
+    .container{
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .container_inner{
+      padding: toRem(92px) 0 toRem(145px);
+    }
     .filter {
       @extend %pull-right;
       color: $color-text-reverse;

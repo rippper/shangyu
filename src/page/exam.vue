@@ -1,51 +1,84 @@
 <template>
-  <div class="exam container_both">
+  <div class="exam" :style="'height:' + height + 'px'">
     <!--头部-->
     <header-fix :title="examTitle" fixed>
       <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
       <!--<router-link slot="right" to="/examSearch"><i class="webapp webapp-search"></i></router-link>-->
     </header-fix>
-    <div class="exam_header">
-      <i class="webapp webapp-time" style="color: #00aeff"></i>
-      <span>倒计时：{{timeLimit | formatTime}}</span>
-      <!-- <span v-else>倒计时：不限时</span> -->
-    </div>
-    <div class="exam_content" v-for="(list,index) in exam" :key="index">
-      <transition name="slide-left">
-        <div v-if="itemNum == index + 1">
-          <p class="exam_name">
-            <span class="red" v-if="list.ThemeType==0">【判断题】</span>
-            <span class="red" v-else-if="list.ThemeType==1">【单选题】</span>
-            <span class="red" v-else-if="list.ThemeType==2">【多选题】</span>
-            <span class="red" v-else-if="list.ThemeType==4">【简答题】</span>
-            <span class="red" v-else>【其它】</span>
-            <span class="topic_name">{{index + 1 + '.' + list.ThemeTitle}}</span>
-            <span class="red">({{Math.round(Number(list.ThemeScore))}}分)</span>
-          </p>
-          <div class="exam_list">
-            <div v-if="list.ThemeType == 0">
-              <mb-radio :options="judgeItem" v-model="choosedItem[index]['Answer']"></mb-radio>
-            </div>
-            <div v-else-if="list.ThemeType == 1">
-              <mb-radio :options="list.ItemString" v-model="choosedItem[index]['Answer']"></mb-radio>
-            </div>
-            <div v-else-if="list.ThemeType == 2">
-              <mb-checklist :options="list.ItemString" v-model="choosedItem[index]['Answer']"></mb-checklist>
-            </div>
-            <div v-else-if="list.ThemeType == 4">
-              <textarea
-                class="answerInput"
-                v-model="choosedItem[index]['Content']"
-                rows="15"
-                placeholder="在此处输入答案内容"
-              ></textarea>
+    <div class="exam_inner">
+      <div class="exam_header">
+        <i class="webapp webapp-time" style="color: #00aeff"></i>
+        <span>倒计时：{{timeLimit | formatTime}}</span>
+        <!-- <span v-else>倒计时：不限时</span> -->
+      </div>
+      <div class="exam_content" v-for="(list,index) in exam" :key="index">
+        <transition name="slide-left">
+          <div v-if="itemNum == index + 1">
+            <p class="exam_name">
+              <span class="red" v-if="list.ThemeType==0">【判断题】</span>
+              <span class="red" v-else-if="list.ThemeType==1">【单选题】</span>
+              <span class="red" v-else-if="list.ThemeType==2">【多选题】</span>
+              <span class="red" v-else-if="list.ThemeType==4">【简答题】</span>
+              <span class="red" v-else>【其它】</span>
+              <span class="topic_name">{{index + 1 + '.' + list.ThemeTitle}}</span>
+              <span class="red">({{Math.round(Number(list.ThemeScore))}}分)</span>
+            </p>
+            <div class="exam_list">
+              <div v-if="list.ThemeType == 0">
+                <mb-radio :options="judgeItem" v-model="choosedItem[index]['Answer']"></mb-radio>
+              </div>
+              <div v-else-if="list.ThemeType == 1">
+                <mb-radio :options="list.ItemString" v-model="choosedItem[index]['Answer']"></mb-radio>
+              </div>
+              <div v-else-if="list.ThemeType == 2">
+                <mb-checklist :options="list.ItemString" v-model="choosedItem[index]['Answer']"></mb-checklist>
+              </div>
+              <div v-else-if="list.ThemeType == 4">
+                <textarea
+                  class="answerInput"
+                  v-model="choosedItem[index]['Content']"
+                  rows="15"
+                  placeholder="在此处输入答案内容"
+                ></textarea>
+              </div>
             </div>
           </div>
+        </transition>
+      </div>
+      <mt-popup
+        class="rule_popup"
+        v-model="popupVisible"
+        popup-transition="popup-fade"
+        closeOnClickModal="false"
+        :style="'height:' + (height-10) + 'px;top:50%;'"
+      >
+        <div class="rule_modal">
+          <h4>测试须知</h4>
+          <p>您好！</p>
+          <p>欢迎您参加上虞市领导干部政治理论应知应会知识测试！</p>
+          <p class="title">一、测试试题</p>
+          <p>1.测试试题由单选题、多选题、判断题三种题型组成。</p>
+          <p>2.每套试卷由系统随机选题后自动生成，共设置10题，每题10分，满分100分，合格分60分。</p>
+          <p>3. 内容主要为习近平新时代中国特色社会主义思想和党的十九大精神、治国理政重要论述、党建工作基本知识、省情市情等领导干部应知应会的知识要点。</p>
+          <p class="title">二、测试规则</p>
+          <p>1.使用账号名登录 “干部在线学习中心”手机端即能参加在线测试，每人每月必须参加一次在线测试并达到合格分。</p>
+          <p>2.试卷生成后，点击“开始答题”即开始计时计分，每题答题时间为两分钟，时间到则自动进入下一题。</p>
+          <p>3.答题完毕后，即刻生成测试成绩。</p>
+          <p>4.单次测试成绩未达60分的，需再次进入测试页面重新答题，系统将记录单次最高得分。
+            <!--当月未参加测试的，将无法点击在线课程的学习。-->
+          </p>
+          <!-- <p>5.未尽事宜如需咨询，可联系服务热线0571-28990788-8006。</p> -->
+          <br>
+          <!--<p class="group">苏州市干部教育工作领导小组办公室</p>-->
+          <div class="btn-group">
+            <mt-button type="primary" size="small" @click="agreeToExam">开始答题</mt-button>
+          </div>
+          <mt-button class="go-back" type="default" size="small" @click="disagree">返回</mt-button>
         </div>
-      </transition>
+      </mt-popup>
     </div>
     <div class="exam_footer">
-      <!-- <mt-button class="prev" type="primary" plain @click.native='preItem'>上一题</mt-button> -->
+    <!-- <mt-button class="prev" type="primary" plain @click.native='preItem'>上一题</mt-button> -->
       <span class="itemNum">
         <span>试题</span>
         （{{itemNum}}/{{allItem}}）
@@ -53,36 +86,6 @@
       <mt-button v-if="itemNum<allItem" type="primary" class="next" @click.native="nextItem">下一题</mt-button>
       <mt-button v-else type="primary" class="next" @click.native="submitExam">提交</mt-button>
     </div>
-    <mt-popup
-      class="rule_popup"
-      v-model="popupVisible"
-      popup-transition="popup-fade"
-      closeOnClickModal="false"
-    >
-      <div class="rule_modal">
-        <h4>测试须知</h4>
-        <p>您好！</p>
-        <p>欢迎您参加上虞市领导干部政治理论应知应会知识测试！</p>
-        <p class="title">一、测试试题</p>
-        <p>1.测试试题由单选题、多选题、判断题三种题型组成。</p>
-        <p>2.每套试卷由系统随机选题后自动生成，共设置10题，每题10分，满分100分，合格分60分。</p>
-        <p>3. 内容主要为习近平新时代中国特色社会主义思想和党的十九大精神、治国理政重要论述、党建工作基本知识、省情市情等领导干部应知应会的知识要点。</p>
-        <p class="title">二、测试规则</p>
-        <p>1.使用账号名登录 “干部在线学习中心”手机端即能参加在线测试，每人每月必须参加一次在线测试并达到合格分。</p>
-        <p>2.试卷生成后，点击“开始答题”即开始计时计分，每题答题时间为两分钟，时间到则自动进入下一题。</p>
-        <p>3.答题完毕后，即刻生成测试成绩。</p>
-        <p>4.单次测试成绩未达60分的，需再次进入测试页面重新答题，系统将记录单次最高得分。
-          <!--当月未参加测试的，将无法点击在线课程的学习。-->
-        </p>
-        <!-- <p>5.未尽事宜如需咨询，可联系服务热线0571-28990788-8006。</p> -->
-        <br>
-        <!--<p class="group">苏州市干部教育工作领导小组办公室</p>-->
-        <div class="btn-group">
-          <mt-button type="primary" size="small" @click="agreeToExam">开始答题</mt-button>
-        </div>
-        <mt-button class="go-back" type="default" size="small" @click="disagree">返回</mt-button>
-      </div>
-    </mt-popup>
   </div>
 </template>
 <script>
@@ -119,7 +122,8 @@ export default {
       itemNum: 1, //第几题
       allItem: 0,
       choosedItem: [],
-      startDate: "" //考试开始时间
+      startDate: "", //考试开始时间
+      height: ''
     };
   },
   created() {
@@ -127,13 +131,20 @@ export default {
     this.reward = this.$route.query.Reward;
     this.rewardInfo = this.$route.query.rewardInfo;
   },
+  computed: {
+    ...mapState(['userInfo', 'userAgent', 'appType'])
+  },
   mounted() {
+    if (this.userAgent.android) {
+      this.height = window.innerHeight
+    } else if (this.userAgent.ios && this.appType == 'app') {
+        this.height = window.innerHeight - 46
+    } else if (this.userAgent.ios && this.appType != 'app') {
+        this.height = window.innerHeight
+    }
     this.getExam();
   },
   props: [],
-  computed: {
-    ...mapState(["userInfo"])
-  },
   methods: {
     agreeToExam() {
       this.startDate = new Date();
@@ -336,10 +347,16 @@ export default {
 @import "../style/mixin";
 
 .exam {
+  position: relative;
   background: url(../assets/exam-bg.png) no-repeat center;
   background-size: 100% 99vh;
   font-size: 15px;
-
+  .exam_inner{
+    width: 100%;
+    height: 100%;
+    padding-top: toRem(92px);
+    overflow-y: auto;
+  }
   .exam_header {
     padding: 0 toRem(30px);
     border-bottom: 1px solid $border-color-base;
@@ -383,14 +400,13 @@ export default {
 
   .exam_footer {
     height: toRem(110px);
-    position: fixed;
+    position: absolute;
     width: 100%;
     bottom:0;
     text-align: center;
     left: 0;
     display: flex;
     align-items: center;
-    background: #fff;
     z-index: 20;
     /*line-height: 73px;*/
     .mint-button {
@@ -406,7 +422,7 @@ export default {
       display: inline-block;
       width: toRem(350px);
       line-height: toRem(73px);
-      margin-left: 2rem;
+      margin-left: toRem(200px);
 
       span {
         color: $color-text-secondary;
@@ -418,18 +434,17 @@ export default {
       margin-right: toRem(30px);
     }
   }
-
   .rule_popup {
     @include borderRadius(10px);
     box-shadow: 0 0 toRem(30px) 4px #545454;
+    background: url(../assets/rule-bg.png) no-repeat center;
+    background-size: 100%;
 
     .rule_modal {
       position: relative;
       width: 9.8rem;
-      height: 99vh;
+      height: 100%;
       padding: toRem(20px);
-      background: url(../assets/rule-bg.png) no-repeat center;
-      background-size: 9.8rem 99vh;
       // padding-bottom: toRem(120px);
       overflow-y: scroll;
 

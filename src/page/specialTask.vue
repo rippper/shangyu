@@ -1,10 +1,10 @@
 <template>
     <div class="specialTask container_top">
-        <header-fix title="专题培训" fixed>
+        <header-fix title="专题学习" fixed>
             <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
         </header-fix>
         <div class="st_bodypart">
-            <!-- <ul>
+            <ul>
                 <li>
                     <router-link :to="{ path: '/courseCenter', query: { title: '“不忘初心、牢记使命”主题教育' } }">
                         <img src="../assets/sy_specialImg1.png" alt>
@@ -20,7 +20,7 @@
                         <img src="../assets/sy_specialImg3.png" alt>
                     </router-link>
                 </li>
-            </ul> -->
+            </ul>
         </div>
     </div>
 </template>

@@ -20,7 +20,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link to="/examGuide">
+                <router-link to="/examCenter">
                     <div>
                         <img src="../assets/sy_exams.png" alt v-show="selected != '3'">
                         <img src="../assets/sy_examst.png" alt v-show="selected == '3'">
@@ -58,11 +58,14 @@ export default {
     .bottombar{
         width: 100%;
         max-width: 10rem;
-        height: toRem(98px);
+        height: toRem(148px);
+        padding-top: toRem(10px);
+        padding-bottom: toRem(50px);
         margin: 0 auto;
+        border-top: 1px solid #e5e5e5;
         transform: translate(-50%, 0);
         background: #fff;
-        position: fixed;
+        position: absolute;
         bottom: 0;
         left: 50%;
         ul{

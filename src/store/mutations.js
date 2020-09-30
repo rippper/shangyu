@@ -5,6 +5,7 @@ import {
   GET_USERINFO,
   SAVE_COURSEINFO,
   SAVE_USERINFO,
+  SET_APPTYPE
 } from './mutation-types.js';
 
 export default {
@@ -31,4 +32,8 @@ export default {
   [ALERT_TIMES](state, payload) {
     state.alertTimes = payload;
   },
+  // 修改apptype
+  [SET_APPTYPE](state, type) {
+    state.appType = type
+  }
 };

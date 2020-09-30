@@ -1,5 +1,5 @@
 <template>
-    <div class="communityCenter container_top">
+    <div class="communityCenter" :style="'height:' + height + 'px'">
         <header-fix title="通知公告" fixed>
             <i class="webapp webapp-back" @click.stop="goBack" slot="left"></i>
         </header-fix>
@@ -11,33 +11,7 @@
                 infinite-scroll-immediate-check="immediate"
                 infinite-scroll-distance="10"
             >
-                <!-- <li class="cc_listItem">
-                    <router-link :to="{ path: '/newsDetails', query: { ref: specialArt[0] ? specialArt[0].articleContent : '' } }">
-                        <p class="cc_cl_title">
-                            <span class="cc_cl_studyprocess">学习流程</span><span v-text="specialArt[0] ? specialArt[0].Articletitle : ''"></span>
-                        </p>
-                        <div class="cc_cl_content">
-                            <div>
-                                作者：<span v-text="specialArt[0] ? specialArt[0].ArticleAuthor : ''"></span>
-                            </div>
-                            <div v-text="specialArt[0] ? specialArt[0].Articlecreatedate : ''"></div>
-                        </div>
-                    </router-link>
-                </li>
-                <li class="cc_listItem">
-                    <router-link :to="{ path: '/newsDetails', query: { ref: specialArt[1] ? specialArt[1].articleContent : '' } }">
-                        <p class="cc_cl_title">
-                            <span class="cc_cl_managerule">管理规定</span><span v-text="specialArt[1] ? specialArt[1].Articletitle : ''"></span>
-                        </p>
-                        <div class="cc_cl_content">
-                            <div>
-                                作者：<span v-text="specialArt[1] ? specialArt[1].ArticleAuthor : ''"></span>
-                            </div>
-                            <div v-text="specialArt[1] ? specialArt[1].Articlecreatedate : ''"></div>
-                        </div>
-                    </router-link>
-                </li> -->
-                <li class="cc_listItem" v-for="(item, index) in noticesList" :key="index">
+                <li class="cc_listItem" v-for="(item, index) in noticesList" :key="index" v-show="item.Noticeid != 21">
                     <router-link :to="{ path: '/newsDetails', query: { ref: item.NoticeContent } }">
                         <p class="cc_cl_title"><span class="cc_cl_notice">通知公告</span><span v-text="item.Noticetitle"></span></p>
                         <div class="cc_cl_content">
@@ -54,14 +28,6 @@
             </ul>
             <skeleArtItem v-for="i in 10" :key="i" v-else></skeleArtItem>
         </div>
-        <!-- <div class="cc_connectus">
-            <router-link :to="{ path: '/newsDetails', query: { ref: specialArt[2] ? specialArt[2].articleContent : '' } }">
-                <div>
-                    <img src="../assets/bianji.png" alt>
-                </div>
-                <p>联系我们</p>
-            </router-link>
-        </div> -->
     </div>
 </template>
 
@@ -80,11 +46,13 @@ export default {
             PageCount: 10,
             specialArt: [],
             showAll: false,
-            canShow: false
+            canShow: false,
+            height: ''
         }
     },
     mounted () {
         this.render()
+        console.log(this.specialArt)
     },
     methods: {
         async render () {
@@ -100,6 +68,7 @@ export default {
             if (this.noticesList.length == this.totalCount) {
                 this.showAll = true
             }
+            console.log(this.noticesList)
             this.canShow = true
         },
         async getMyNotices () {
@@ -131,6 +100,7 @@ export default {
     position: relative;
     .cc_communitylist{
         ul{
+            padding-top: toRem(92px);
             .cc_listItem{
                 width: toRem(690px);
                 height: toRem(200px);
